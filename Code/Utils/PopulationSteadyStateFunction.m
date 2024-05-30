@@ -145,40 +145,5 @@ filename = sprintf("CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",Cycl
 
 save(filename);
 
-%% Generate HeatMap
-
-%%Pick Index of appropriate quantity (if p_V != 0 , pick density of V, if
-%%p_L! = 0, pick density of L and so on)
-
-% if p_V ~= 0
-%     index = 9; ColorBarTitle = "Total Free Virus Density (mL^{-1})";
-% elseif p_L ~= 0
-%     index = 7; ColorBarTitle = "Total Lysogen Density (mL^{-1})";
-% elseif p_I ~= 0
-%     index = 5; ColorBarTitle = "Total Lytic Cell Density (mL^{-1})";
-% end
-% 
-% 
-% 
-% h = figure;
-% imagesc(Gamma,Q,squeeze(SteadyStateDensity(:,:,index)));
-% hold on;
-% set(gca,'XScale','log');
-% set(gca,'YScale','linear');
-% set(gca,'ColorScale','log');
-% set(gca,'YDir','normal');
-% 
-% c = colorbar; 
-% c.Label.String = ColorBarTitle;
-% c.Label.Rotation = -90;
-% c.Label.Position(1) = 4;
-% ylabel('Integration probability');
-% xlabel('Induction Rate (hr^{-1})');
-% title(['S_0 = ' num2str(S0,'%1e')]);
-% set(gca,"FontWeight",'bold','FontSize',14);
-% contour(Gamma,Q,squeeze(SteadyStateDensity(:,:,index)),'-k')
-% title(['Passage (S_0,p_V) = (' num2str(S0,'%1.1e') ',' num2str(p_V,'%1.1e')]);
-%saveas(h,['Passage (S_0,p_V) = (' num2str(S0,'%1.1e') ',' num2str(p_V,'%1.1e') ').png'])
-
 end
 
