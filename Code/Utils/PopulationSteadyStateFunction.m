@@ -9,7 +9,9 @@
 %%Inputs:
 % CyclePeriod - Duration of Single Cycle in hours.
 % p_L - fraction of lysogens being passaged between cycles.
-% p_V - fraction of virions being passaged between cycles
+% p_V - fraction of virions being passaged between cycles.
+% Gamma - array of Gamma values at which steady states are to be evaluated.
+% Q - array of Q values at which steady states are to be evaluated. 
 % numNodes - number of nodes being used for parallel computing. Do not
 % exceed 32 (depending on cluster being used).
 
@@ -21,7 +23,7 @@
 % each cell type for all strategies evaluated but does not have the
 % dynamics for the strategies.
 
-function PopulationSteadyStateFunction(CyclePeriod,p_L,p_V,numNodes)
+function PopulationSteadyStateFunction(CyclePeriod,p_L,p_V,Gamma,Q,numNodes)
 
 addpath('Utils');
 
@@ -47,8 +49,6 @@ params.eta = 1; %per hour
 params.bet = 50;
 params.q = [0 0];
 params.gamma = [0 0];
-Q = linspace(0,1,21);
-Gamma = logspace(-3,0,26);
 
 %% simulation parameters:
 params.flask_volume = 500; %volume in mL
