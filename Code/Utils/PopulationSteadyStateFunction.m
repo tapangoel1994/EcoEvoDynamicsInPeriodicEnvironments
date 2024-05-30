@@ -14,6 +14,9 @@
 % Q - array of Q values at which steady states are to be evaluated. 
 % numNodes - number of nodes being used for parallel computing. Do not
 % exceed 32 (depending on cluster being used).
+% params as the varargin input - simulation parameters including life history traits and
+% simulation parameters. if params is empty, the function assigns default
+% values to the parameters internally.
 
 %%Output:
 % Script generates a .mat file named:
@@ -23,38 +26,46 @@
 % each cell type for all strategies evaluated but does not have the
 % dynamics for the strategies.
 
-function PopulationSteadyStateFunction(CyclePeriod,p_L,p_V,Gamma,Q,numNodes)
+function PopulationSteadyStateFunction(CyclePeriod,p_L,p_V,Gamma,Q,numNodes,varargin)
 
 addpath('Utils');
+%% If life history and simulation parameters are not added as a function input, create parameter values
+if nargin == 6
 
-%% Life history parameters (units of hours, micrograms and mL). 
-params.J = 0; %ug/mL-h
-params.conversion_efficiency = 5e-7; %ug/cell
-params.d_R = 0; % per hour
-params.mu_max = 1.2; % per hour
-params.R_in = 4; %ug/mL
-params.alpha_l = 0;
-params.alpha_e = 0;
-params.alpha_i = 0;
+    %% Life history parameters (units of hours, micrograms and mL). 
+    params.J = 0; %ug/mL-h
+    params.conversion_efficiency = 5e-7; %ug/cell
+    params.d_R = 0; % per hour
+    params.mu_max = 1.2; % per hour
+    params.R_in = 4; %ug/mL
+    params.alpha_l = 0;
+    params.alpha_e = 0;
+    params.alpha_i = 0;
+    
+    params.d_S = .2; %per hour
+    params.d_E = .2; %per hour
+    params.d_L = .2; %per hour
+    params.d_I = .2; %per hour
+    params.m = 1/24; %per hour
+    
+    params.phi = 3.4e-10; %mL/hr
+    params.lambda = 2; %per hour
+    params.eta = 1; %per hour
+    params.bet = 50;
+    params.q = [0 0];
+    params.gamma = [0 0];
+    
+    %% simulation parameters:
+    params.flask_volume = 500; %volume in mL
+    params.dt = 1/30; % hours
+    params.T = CyclePeriod; % hours
+    params.t_vals = transpose(0:params.dt:params.T); % time
 
-params.d_S = .2; %per hour
-params.d_E = .2; %per hour
-params.d_L = .2; %per hour
-params.d_I = .2; %per hour
-params.m = 1/24; %per hour
+else 
+    params = varargin{1}; %% if life history and simulation parameters were added as function input, assign them to the params variable.
+end
 
-params.phi = 3.4e-10; %mL/hr
-params.lambda = 2; %per hour
-params.eta = 1; %per hour
-params.bet = 50;
-params.q = [0 0];
-params.gamma = [0 0];
 
-%% simulation parameters:
-params.flask_volume = 500; %volume in mL
-params.dt = 1/30; % hours
-params.T = CyclePeriod; % hours
-params.t_vals = transpose(0:params.dt:params.T); % time
 MaxCycles = 50000;
 
 %% filter parameters
