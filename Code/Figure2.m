@@ -82,16 +82,16 @@ params.gamma = [.083 0];
 
 %% Plot all three time series
 markerstyle = {'+','*','.','x','s'};
-    linecolors.S = '#000000';
+    linecolors.S = '#0000ff';
     linecolors.E = '#ffa600';
     linecolors.I = '#a74ac7';
     linecolors.L = '#ff0000';
     linecolors.V = '#00cbff';
 
-h = figure('Position',[100 0 600 1200]);
-t = tiledlayout(3,1,"TileSpacing",'tight');
+h = figure('Position',[100 0 3*600 1200]);
+t = tiledlayout(2,6,"TileSpacing",'tight');
 
-nexttile;
+nexttile(1,[1 2]);
     semilogy(t_vals,y_lytic(:,1),'LineWidth',3,'Color',[.5 .5 .5]);  %Plot R
     hold on;
     semilogy(t_vals,y_lytic(:,2),'LineWidth',3,'Color',linecolors.S); %Plot S
@@ -102,13 +102,12 @@ nexttile;
     ylim([1e-2 1e10]);
     xlim([0 max(t_vals)]);
     set(gca,'YMinorTick','off','Box','off','XTick',0:4:24,'XTickLabel',0:4:24,'YTick',logspace(-2,10,7));
-    title('Obligate lytic');
-    set(gca,'FontSize',18);
-    set(gca,"FontWeight",'bold');   
-    ylabel(t,'Density (mL^{-1})','FontSize',22,'FontWeight','bold');
+    title('Obligately lytic');
+    set(gca,'FontSize',22,'FontWeight','bold','FontName','Times');
+    ylabel('Density (mL^{-1})','FontSize',26,'FontWeight','bold','FontName','Times');
     legend('R','S','E','I','L','V','location','best');
 
-nexttile;
+nexttile(3,[1 2]);
     semilogy(t_vals,y_temperate(:,1),'LineWidth',3,'Color',[.5 .5 .5]);  %Plot R
     hold on;
     semilogy(t_vals,y_temperate(:,2),'LineWidth',3,'Color',linecolors.S); %Plot S         
@@ -118,13 +117,12 @@ nexttile;
     semilogy(t_vals,y_temperate(:,9),'LineWidth',3,'Color',linecolors.V); %Plot V1
     ylim([1e-2 1e10]);
     xlim([0 max(t_vals)]);
-    set(gca,'YMinorTick','off','Box','off','XTick',0:4:24,'XTickLabel',0:4:24,'YTick',logspace(-2,10,7));
+    set(gca,'YMinorTick','off','Box','off','XTick',0:4:24,'XTickLabel',0:4:24,'YTick',logspace(-2,10,7),'YTickLabel',[]);
     title('Temperate');
-    set(gca,'FontSize',18);
-    set(gca,"FontWeight",'bold');  
-    xlabel(t,'Time (hr)','FontSize',22,'FontWeight','bold');
+    set(gca,'FontSize',22,'FontWeight','bold','FontName','Times');
+    xlabel(t,'Time (hr)','FontSize',26,'FontWeight','bold','FontName','Times');
 
-nexttile;
+nexttile(5,[1 2]);
     semilogy(t_vals,y_lysogenic(:,1),'LineWidth',3,'Color',[.5 .5 .5]);  %Plot R
     hold on;
     semilogy(t_vals,y_lysogenic(:,2),'LineWidth',3,'Color',linecolors.S); %Plot S
@@ -134,10 +132,21 @@ nexttile;
     semilogy(t_vals,y_lysogenic(:,9),'LineWidth',3,'Color',linecolors.V); %Plot V1
     ylim([1e-2 1e10]);
     xlim([0 max(t_vals)]);
+    set(gca,'YMinorTick','off','Box','off','XTick',0:4:24,'XTickLabel',0:4:24,'YTick',logspace(-2,10,7),'YTickLabel',[]);
+    title('Obligately lysogenic');
+    set(gca,'FontSize',22,'FontWeight','bold','FontName','Times');
+
+nexttile(8,[1 4])
+    semilogy(t_vals,sum(y_lytic(:,3:10),2),'LineWidth',3,'Color','k','LineStyle','-');
+    hold on;
+    semilogy(t_vals,sum(y_temperate(:,3:10),2),'LineWidth',3,'Color','k','LineStyle','-.');
+    semilogy(t_vals,sum(y_lysogenic(:,3:10),2),'LineWidth',3,'Color','k','LineStyle',':');
+    ylim([1e-2 1e10]);
+    xlim([0 max(t_vals)]);
     set(gca,'YMinorTick','off','Box','off','XTick',0:4:24,'XTickLabel',0:4:24,'YTick',logspace(-2,10,7));
-    title('Lysogenic');
-    set(gca,'FontSize',18);
-    set(gca,"FontWeight",'bold');  
+    set(gca,'FontSize',22,'FontWeight','bold','FontName','Times');
+    ylabel('Total viral genomes (mL^{-1})','FontSize',26,'FontWeight','bold','FontName','Times');
+    legend("Obligately lytic","Temperate","Obligately lysogenic")
 
  
 
