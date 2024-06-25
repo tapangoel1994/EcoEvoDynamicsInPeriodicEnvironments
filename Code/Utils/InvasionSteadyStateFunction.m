@@ -31,7 +31,7 @@
 function [InvasionSteadyStateDensity, InvasionSSCycles] = InvasionSteadyStateFunction(CyclePeriod,p_L,p_V,InvasionVariable,numNodes,SaveFlag, varargin)
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
-if nargin == 5
+if nargin == 6
 
     %% Life history parameters (units of hours, micrograms and mL). 
     params.J = 0; %ug/mL-h
@@ -70,12 +70,13 @@ end
 MaxCycles = 50000;
 
 %% filter parameters
+p_R = 1;
 p_S = 0;
 p_E = 0;
 p_I = 0;
 p_L = p_L;
 p_V = p_V;
-TransferMatrix = diag([0 p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call

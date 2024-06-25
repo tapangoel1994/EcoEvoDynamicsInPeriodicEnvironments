@@ -31,7 +31,7 @@
 function [SteadyStateDensity, SSCycles] = PopulationSteadyStateFunction(CyclePeriod,p_L,p_V,Gamma,Q,numNodes,SaveFlag,varargin)
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
-if nargin == 6
+if nargin == 7
 
     %% Life history parameters (units of hours, micrograms and mL). 
     params.J = 0; %ug/mL-h
@@ -70,6 +70,7 @@ end
 MaxCycles = 50000;
 
 %% filter parameters
+p_R = 1;
 p_S = 0;
 p_E = 0;
 p_I = 0;
