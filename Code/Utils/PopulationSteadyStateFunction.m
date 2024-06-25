@@ -138,7 +138,7 @@ parfor ii = 1:length(Q)*length(Gamma)
         %drawnow;
         end
         SSCyclesTemp(ii,:) = [Q(i) Gamma(j) iter];
-        SteadyStateDensityTemp(ii,:) = y(end,:);
+        SteadyStateDensityTemp(ii,:) = x0;
         
 
     end
