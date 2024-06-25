@@ -1,5 +1,6 @@
 %% This script generates the marker and color palatte used for timeseries plots across this project
 
+linecolors.R = .5*[1 1 1];
 linecolors.S = '#0000ff';
 linecolors.E = '#ffa600';
 linecolors.I = '#a74ac7';
@@ -13,3 +14,5 @@ marker.lysogenic = '^';
 linestyle.lytic = '-';
 linestyle.temperate = '-.';
 linestyle.lysogenic = ':';
+
+save('colorpalette.mat');
