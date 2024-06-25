@@ -8,7 +8,7 @@
 %close all; 
 %clear all;
 
-addpath('Utils\');
+addpath('utils\');
 load('lib\colorpalette.mat');
 load('lib\fixedparameters.mat');
 
