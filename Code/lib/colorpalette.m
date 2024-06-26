@@ -3,7 +3,7 @@
 linecolors.R = .5*[1 1 1];
 linecolors.S = '#0000ff';
 linecolors.E = '#ffa600';
-linecolors.I = '#a74ac7';
+linecolors.I = '#c568e5';%'#e386ff';%'#a74ac7';
 linecolors.L = '#00cbff';
 linecolors.V = '#ff0000';
 
@@ -14,7 +14,7 @@ marker.lysogenic = 'o';
 linestyle.lytic = '-';
 linestyle.temperate = '-.';
 linestyle.lysogenic = ':';
-
+Strategies = {'lytic','temperate','lysogenic'};
 % Set default interpreters to 'latex' for consistent font styling
 % This script changes all interpreters from tex to latex. 
 
