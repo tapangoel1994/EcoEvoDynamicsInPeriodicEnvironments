@@ -20,11 +20,19 @@ linestyle.lysogenic = ':';
 
 list_factory = fieldnames(get(groot,'factory'));
 index_interpreter = find(contains(list_factory,'Interpreter'));
+index_fontname = find(contains(list_factory,'FontName'));
+
 
 for i = 1:length(index_interpreter)
     default_name = strrep(list_factory{index_interpreter(i)},'factory','default');
     set(groot, default_name,'latex');
 end
+
+for i = 1:length(index_fontname)
+    default_name = strrep(list_factory{index_fontname(i)},'factory','default');
+    set(groot, default_name,'Times New Roman');
+end
+
 % Optionally, set a consistent font style, e.g., 'Times New Roman'
 set(groot, 'defaultAxesFontName', 'Times New Roman');
 set(groot, 'defaultTextFontName', 'Times New Roman');
