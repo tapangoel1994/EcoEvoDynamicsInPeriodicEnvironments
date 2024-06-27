@@ -125,6 +125,12 @@ for index = 3:-2:1
 
 end
 
+
+%% Add vertical lines on the steady state plots
+nexttile(1)
+xline(.0832,'LineWidth',1.5,'Color','k','LineStyle','--');
+nexttile(3)
+xline(.0832,'LineWidth',1.5,'Color','k','LineStyle','--');
 %% Add Annotations
 nexttile(1);
 text(0.6210,0.0508,'$(\gamma_m,p_m)$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','red','BackgroundColor','white');
