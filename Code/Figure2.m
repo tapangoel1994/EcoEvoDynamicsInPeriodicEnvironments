@@ -10,8 +10,9 @@ close all;
 clear all;
 
 addpath('utils\');
-load('lib\colorpalette.mat');
-load('lib\fixedparameters.mat');
+addpath('lib\');
+    colorpalette;
+    fixedparameters;
 
 
 %% simulation parameters:
@@ -94,7 +95,10 @@ filename = filename(end).name;
 if isempty(filename)
     filename = 'SingleCycle_v1.eps';
 else
-    filename = [filename(1:end-5) num2str(str2num(filename(end-4))+1) '.eps'];
+    version = extractBetween(filename,"_v",".");
+    version = version{1};
+    version = str2num(version);
+    filename = [filename(1:end-5) num2str(version+1) '.eps'];
 end
 saveas(h,filename,'epsc');
 % nexttile(2);
@@ -137,7 +141,4 @@ saveas(h,filename,'epsc');
 %     set(gca,'FontSize',22,'FontWeight','bold','FontName','Times');
 %     ylabel('Total viral genomes $(mL^{-1})$','FontSize',26,'FontWeight','bold','FontName','Times');
 %     legend("Obligately lytic","Temperate","Obligately lysogenic")
-% 
-% 
-% 
-% 
+
