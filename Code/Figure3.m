@@ -35,7 +35,7 @@ x0 = [R0 S0 zeros(1,6) V01 V02];
 
 %% Initiate figure
 h_main = figure('Position',[100 0 1260 800]);
-t_main = tiledlayout(3,5,'TileSpacing','compact','Padding','tight');
+t_main = tiledlayout(3,5,'TileSpacing','compact','Padding','compact');
 
 
 
@@ -106,6 +106,10 @@ ylim([1e-2 1e10]);
 xlim([0 3.1*params.T]);
 set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',[],'YTick',logspace(-2,10,4));
 set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
+text(-13,1e10,'(A)','FontSize',16,'FontWeight','bold');
+text(.3*params.T,1e0,'Cycle 1','FontSize',16,'FontWeight','bold');
+text(1.3*params.T,1e0,'Cycle 2','FontSize',16,'FontWeight','bold');
+text(2.3*params.T,1e0,'Cycle 3','FontSize',16,'FontWeight','bold');
 hold off;
 
 
@@ -122,6 +126,8 @@ ylim([1e-2 1e10]);
 set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',[],'YTick',logspace(-2,10,4),'YTickLabel',[]);
 set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
 legend('Obligately lytic','Temperate','Obligately lysogenic','FontName','Times','FontWeight','bold','FontSize',14,'location','best');
+legend('boxoff');
+text(-1,1e10,'(B)','FontSize',16,'FontWeight','bold');
 hold off;
 
 
@@ -191,6 +197,7 @@ ylim([1e-2 1e10]);
 xlim([0 3.1*params.T]);
 set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',[],'YTick',logspace(-2,10,4));
 set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
+text(-13,1e10,'(C)','FontSize',16,'FontWeight','bold');
 hold off;
 
 
@@ -205,6 +212,7 @@ xline(2.95,'--','LineWidth',1.5,'Color',.2*[1 1 1]);
 ylim([1e-2 1e10]);
 set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',[],'YTick',logspace(-2,10,4),'YTickLabel',[]);
 set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
+text(-1,1e10,'(D)','FontSize',16,'FontWeight','bold');
 hold off;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -273,6 +281,7 @@ xlim([0 3.1*params.T]);
 set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',0:8:3*params.T,'YTick',logspace(-2,10,4));
 set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
 xlabel('Times (hr)','FontSize',18,'FontWeight','bold','FontName','Times');
+text(-13,1e10,'(E)','FontSize',16,'FontWeight','bold');
 hold off;
 
 
@@ -287,8 +296,9 @@ xline(2.95,'--','LineWidth',1.5,'Color',.2*[1 1 1]);
 ylim([1e-2 1e10]);
 set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',2:2:NCycles,'YTick',logspace(-2,10,4),'YTickLabel',[]);
 set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
-xlabel('# Cycles','FontSize',18,'FontWeight','bold','FontName','Times');
+xlabel('Number of cycles','FontSize',18,'FontWeight','bold','FontName','Times');
+text(-1,1e10,'(F)','FontSize',16,'FontWeight','bold');
 hold off;
 
-
-ylabel(t_main,'Total viral genome density (mL^{-1})','FontSize',18,'FontWeight','bold','FontName','Times');
+nexttile(6);
+ylabel('Total viral genome density (mL$^{-1})$','FontSize',18,'FontWeight','bold','FontName','Times');
