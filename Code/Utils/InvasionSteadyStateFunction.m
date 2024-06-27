@@ -59,8 +59,7 @@ if nargin == 6
     %% simulation parameters:
     params.flask_volume = 500; %volume in mL
     params.dt = 1/30; % hours
-    params.T = CyclePeriod; % hours
-    params.t_vals = transpose(0:params.dt:params.T); % time
+    
 
 else 
     params = varargin{1}; %% if life history and simulation parameters were added as function input, assign them to the params variable.
@@ -68,6 +67,8 @@ end
 
 
 MaxCycles = 50000;
+params.T = CyclePeriod; % hours
+params.t_vals = transpose(0:params.dt:params.T); % time
 
 %% filter parameters
 p_R = 1;
