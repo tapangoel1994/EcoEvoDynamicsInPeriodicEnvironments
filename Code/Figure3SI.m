@@ -82,7 +82,7 @@ for conditions = 1:3
     %% Make figure
     
     supfig3_1 = figure('Position',[100 0 1260 800]);
-    t_main = tiledlayout(3,5,'TileSpacing','compact','Padding','tight');
+    t_main = tiledlayout(3,5,'TileSpacing','loose','Padding','tight');
     
         
     %%%% Plot lytic strategy
@@ -110,6 +110,7 @@ for conditions = 1:3
     xlim([0 3.1*params.T]);
     set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',[],'YTick',logspace(-2,10,4));
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
+    text(-13,1e10,'(A)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -128,6 +129,7 @@ for conditions = 1:3
     set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',[],'YTick',logspace(-2,10,4),'YTickLabel',[]);
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
     legend('R','S','E','I','L','V','FontName','Times','FontWeight','bold','FontSize',14,'location','best');
+    text(-1,1e10,'(B)','FontSize',16,'FontWeight','bold');
     hold off;
     
 
@@ -157,6 +159,7 @@ for conditions = 1:3
     xlim([0 3.1*params.T]);
     set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',[],'YTick',logspace(-2,10,4));
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
+    text(-13,1e10,'(C)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -174,6 +177,7 @@ for conditions = 1:3
     ylim([1e-2 1e10]);
     set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',[],'YTick',logspace(-2,10,4),'YTickLabel',[]);
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
+    text(-1,1e10,'(D)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -203,6 +207,7 @@ for conditions = 1:3
     set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',0:8:3*params.T,'YTick',logspace(-2,10,4));
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
     xlabel('Time (hr)','FontSize',18,'FontWeight','bold','FontName','Times');
+    text(-13,1e10,'(E)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -220,11 +225,14 @@ for conditions = 1:3
     ylim([1e-2 1e10]);
     set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',2:2:NCycles,'YTick',logspace(-2,10,4),'YTickLabel',[]);
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
-    xlabel('# Cycles','FontSize',18,'FontWeight','bold','FontName','Times');
+    xlabel('Number of cycles','FontSize',18,'FontWeight','bold','FontName','Times');
+    text(-1,1e10,'(F)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
-    
-    ylabel(t_main,'Density (mL^{-1})','FontSize',18,'FontWeight','bold','FontName','Times');
-    title(t_main,sprintf("Filtration condition: %s pass through",figuretitles{conditions}),'FontSize',20,'FontWeight','bold','FontName','Times');
+    nexttile(6)
+    ylabel('Density (mL$^{-1}$)','FontSize',18,'FontWeight','bold','FontName','Times');
+    title(t_main,sprintf("Filtration condition: %s pass through",figuretitles{conditions}),'FontSize',20,'FontWeight','bold','FontName','Times','interpreter','latex');
+    saveas(supfig3_1,['CycleToCycle_SI' num2str(conditions) '_v2.eps'],'epsc');
+
 end
