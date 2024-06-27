@@ -98,7 +98,7 @@ else
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
-    filename = [filename(1:end-5) num2str(version+1) '.eps'];
+    filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
 end
 saveas(h,filename,'epsc');
 % nexttile(2);
