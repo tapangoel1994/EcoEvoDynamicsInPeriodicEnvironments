@@ -39,4 +39,4 @@ set(groot, 'defaultTextFontName', 'Times New Roman');
 
 
 
-save('colorpalette.mat');
+%save('colorpalette.mat');

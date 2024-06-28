@@ -31,4 +31,4 @@ steadystatethresh = 1e-1/params.flask_volume; % concentration difference below w
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
 
-save('fixedparameters.mat');
+%save('fixedparameters.mat');
