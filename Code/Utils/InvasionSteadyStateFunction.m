@@ -168,7 +168,10 @@ parfor resident = 1:length(InvasionVariable)
 
 %% Save workspace
 if SaveFlag == 1
-    filename = sprintf("InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,V01,p_L,p_V);
+    if ~isfolder('..\Data\')
+        mkdir('..\Data\');
+    end
+    filename = sprintf("..\Data\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,V01,p_L,p_V);
     save(filename);
 end
 
