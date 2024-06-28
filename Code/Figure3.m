@@ -7,9 +7,11 @@
 close all; 
 clear all;
 
-addpath('Utils\');
-load('lib\colorpalette.mat');
-load('lib\fixedparameters.mat');
+addpath('utils\');
+addpath('lib\');
+    colorpalette;
+    fixedparameters;
+
 
 
 %% simulation parameters:

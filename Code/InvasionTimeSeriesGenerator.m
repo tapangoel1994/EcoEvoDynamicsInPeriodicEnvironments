@@ -224,7 +224,7 @@ else
     version = str2num(version);
     filename = ['..\Figures\' extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
 end
-%saveas(fig,filename,'epsc');
+saveas(fig,filename,'epsc');
 
 
    

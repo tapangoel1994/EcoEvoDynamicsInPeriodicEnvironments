@@ -25,8 +25,8 @@ V01 = 1e4;
 
 
 for index = 1:3
-    if isfile(sprintf("CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(1,1),p_LV(1,2)))
-        load(sprintf("CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(1,1),p_LV(1,2)));
+    if isfile(sprintf("..\Data\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(1,1),p_LV(1,2)))
+        load(sprintf("..\Data\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(1,1),p_LV(1,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
@@ -43,8 +43,8 @@ for index = 1:3
     
     InvasionVariable = [Q' Gamma(i)*ones(size(Q'))];
     %InvasionVariable = [Q' Gamma(i)*ones(size(Q'))];
-    if isfile(sprintf("InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(1,1),p_LV(1,2)))
-        load(sprintf("InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(1,1),p_LV(1,2)));
+    if isfile(sprintf("..\Data\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(1,1),p_LV(1,2)))
+        load(sprintf("..\Data\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(1,1),p_LV(1,2)));
         Invasion{index} = InvasionSteadyStateDensity;
         CyclesInvasion{index} = InvasionSSCycles;
     else
@@ -214,10 +214,10 @@ text(1.06,.9,'Mutant invasion fails','FontSize',14,'FontWeight','bold','Rotation
 
 
 %% Save Figure
-filename = dir('ChangingCyclePeriod*');
+filename = dir('..\Figures\ChangingCyclePeriod*');
 
 if isempty(filename)
-    filename = 'ChangingCyclePeriod_v1.eps';
+    filename = '..\Figures\ChangingCyclePeriod_v1.eps';
 else
     filename = filename(end).name;
     version = extractBetween(filename,"_v",".");

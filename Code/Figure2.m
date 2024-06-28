@@ -90,11 +90,12 @@ text(-5.5,10^10,'(C)','FontSize',16,'FontWeight','bold');
 nexttile(4);
 text(-5.5,10^8,'(D)','FontSize',16,'FontWeight','bold');
 %% Save Figure
-filename = dir('SingleCycle*');
-filename = filename(end).name;
+filename = dir('..\Figure\SingleCycle*');
+
 if isempty(filename)
     filename = 'SingleCycle_v1.eps';
 else
+    filename = filename(end).name;
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);

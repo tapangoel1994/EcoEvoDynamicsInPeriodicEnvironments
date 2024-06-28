@@ -7,9 +7,10 @@
 close all; 
 clear all;
 
-addpath('Utils');
-load('lib\colorpalette.mat');
-load('lib\fixedparameters.mat');
+addpath('utils\');
+addpath('lib\');
+    colorpalette;
+    fixedparameters;
 
 %% simulation parameters:
 params.T = 24; % hours
@@ -233,6 +234,18 @@ for conditions = 1:3
     nexttile(6)
     ylabel('Density (mL$^{-1}$)','FontSize',18,'FontWeight','bold','FontName','Times');
     title(t_main,sprintf("Filtration condition: %s pass through",figuretitles{conditions}),'FontSize',20,'FontWeight','bold','FontName','Times','interpreter','latex');
-    saveas(supfig3_1,['CycleToCycle_SI' num2str(conditions) '_v2.eps'],'epsc');
-
+    
+    %% Save Figure
+    filename = dir(['..\Figures\CycleToCycle_SI' num2str(conditions) '*']);
+    
+    if isempty(filename)
+        filename = ['..\Figures\CycleToCycle_SI' num2str(conditions) '_v1.eps'];
+    else
+        filename = filename(end).name;
+        version = extractBetween(filename,"_v",".");
+        version = version{1};
+        version = str2num(version);
+        filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
+    end
+    saveas(supfig3_1,filename,'epsc');
 end

@@ -123,10 +123,10 @@ text(-16,10^10,'(C)','FontSize',16,'FontWeight','bold');
 nexttile(4);
 text(-16,10^10,'(D)','FontSize',16,'FontWeight','bold');
 %% Save Figure
-filename = dir('RandomSelections*');
+filename = dir('..\Figures\RandomSelections*');
 filename = filename(end).name;
 if isempty(filename)
-    filename = 'SingleCycle_v1.eps';
+    filename = '..\Figures\RandomSelections_v1.eps';
 else
     version = extractBetween(filename,"_v",".");
     version = version{1};

@@ -26,8 +26,8 @@ V01 = 1e4;
 
 
 for index = 1:2
-    if isfile(sprintf("CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
-        load(sprintf("CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
+    if isfile(sprintf("..\Data\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
+        load(sprintf("..\Data\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
@@ -44,8 +44,8 @@ for index = 1:2
     
     InvasionVariable = [Q' Gamma(i)*ones(size(Q'))];
     %InvasionVariable = [Q' Gamma(i)*ones(size(Q'))];
-    if isfile(sprintf("InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
-        load(sprintf("InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
+    if isfile(sprintf("..\Data\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
+        load(sprintf("..\Data\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
         Invasion{index} = InvasionSteadyStateDensity;
         CyclesInvasion{index} = InvasionSSCycles;
     else
@@ -185,10 +185,10 @@ text(1.06,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotatio
 
 
 %% Save Figure
-filename = dir('ChangingFiltrationRatio*');
+filename = dir('..\Figures\ChangingFiltrationRatio*');
 
 if isempty(filename)
-    filename = 'ChangingFiltrationRatio_v1.eps';
+    filename = '..\Figures\ChangingFiltrationRatio_v1.eps';
 else
     filename = filename(end).name;
     version = extractBetween(filename,"_v",".");
@@ -196,5 +196,5 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
 end
-%saveas(h,filename,'epsc');
+saveas(h,filename,'epsc');
 
