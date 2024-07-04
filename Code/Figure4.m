@@ -197,5 +197,5 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
 end
-%saveas(h,filename,'epsc');
+saveas(h,filename,'epsc');
 

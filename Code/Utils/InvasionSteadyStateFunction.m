@@ -106,7 +106,7 @@ parfor resident = 1:length(InvasionVariable)
         %% Resident dynamics to steady state
         
         %First cycle
-        x0 = [R0 S0 zeros(1,6) V01 V02];
+        x0 = [R0 S0 zeros(1,6) V01 0];
         [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);        
         % Cycles till steady state or till MaxCycles
         iter = 1;
@@ -171,7 +171,7 @@ if SaveFlag == 1
     if ~isfolder('..\Data\')
         mkdir('..\Data\');
     end
-    filename = sprintf("..\Data\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,V01,p_L,p_V);
+    filename = sprintf("..\\Data\\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,V01,p_L,p_V);
     save(filename);
 end
 
