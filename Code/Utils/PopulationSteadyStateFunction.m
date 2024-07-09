@@ -158,7 +158,7 @@ if SaveFlag == 1
      if ~isfolder('..\Data\')
         mkdir('..\Data\');
     end
-    filename = sprintf("..\Data\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,V01,p_L,p_V);
+    filename = sprintf("..\\Data\\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,V01,p_L,p_V);
     save(filename);
 end
 
