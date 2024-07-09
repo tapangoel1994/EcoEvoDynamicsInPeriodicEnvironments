@@ -23,10 +23,10 @@ params.bet = 50;
 
 
 %% Simulation parameters:
-params.flask_volume = 500; %volume in mL
+params.flask_volume = 1000; %volume in mL
 params.dt = 1/30; % hours
 MaxCycles = 50000;
-steadystatethresh = 1e-1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
+steadystatethresh = 1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
