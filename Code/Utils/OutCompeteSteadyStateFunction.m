@@ -22,13 +22,13 @@
 
 %% Output:
 % Script generates a .mat file named:
-% "InvasionCyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,p_L=<p_L>,p_V=<p_V>.mat"
+% "OutCompeteCyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,p_L=<p_L>,p_V=<p_V>.mat"
 % that contains all the variables in the workspace from the simulation.
 % Note that the output file has variables for the steady state values of
 % each cell type for all strategies evaluated but does not have the
 % dynamics for the strategies.
 
-function [InvasionSteadyStateDensity, InvasionSSCycles] = InvasionSteadyStateFunction(CyclePeriod,p_L,p_V,InvasionVariable,numNodes,SaveFlag, varargin)
+function [OutcompeteSteadyStateDensity, OutCompeteSSCycles] = OutCompeteSteadyStateFunction(CyclePeriod,p_L,p_V,InvasionVariable,numNodes,SaveFlag, varargin)
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
 if nargin == 6
@@ -83,8 +83,8 @@ TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
 steadystatethresh = 1e-1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
 
-InvasionSteadyStateDensity = zeros(length(InvasionVariable),length(InvasionVariable),10);
-InvasionSSCycles = zeros(length(InvasionVariable),length(InvasionVariable));
+OutcompeteSteadyStateDensity = zeros(length(InvasionVariable),length(InvasionVariable),10);
+OutCompeteSSCycles = zeros(length(InvasionVariable),length(InvasionVariable));
 
 %% initial conditions
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
@@ -159,8 +159,8 @@ parfor resident = 1:length(InvasionVariable)
             
             end
         end
-        InvasionSteadyStateDensity(resident,:,:) = InvasionforResident;
-        InvasionSSCycles(resident,:) = InvasionCyclesforResident;
+        OutcompeteSteadyStateDensity(resident,:,:) = InvasionforResident;
+        OutCompeteSSCycles(resident,:) = InvasionCyclesforResident;
 
     end
     toc
