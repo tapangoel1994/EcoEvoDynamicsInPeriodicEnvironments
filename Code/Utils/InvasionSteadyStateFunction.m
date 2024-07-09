@@ -1,9 +1,10 @@
 %%Code takes one-host two-virus system and sweeps over q for a fixed gamma or gamma for a fixed q keeping
 %other parameters fixed and does invasion analysis. Uses an RSEILV model with no MOI dependence. 
-% Obtain appropriate steady state densities for
-% every resident mutant pair and generate a heatmap. 
+% Obtain appropriate steady state densities for resident. Add mutant at
+% threshold and look at first InvasionCycles = 10 cycles to see if the viral frequency has
+% increased for every resident-mutant pair.
 
-%%Date Created: 1/23/2024
+%%Date Created: 07/09/2024
 %%Author: Tapan Goel
 
 %% Inputs:
@@ -57,7 +58,7 @@ if nargin == 6
     params.gamma = [0 0];
     
     %% simulation parameters:
-    params.flask_volume = 500; %volume in mL
+    params.flask_volume = 1000; %volume in mL
     params.dt = 1/30; % hours
     
 
@@ -67,6 +68,7 @@ end
 
 
 MaxCycles = 50000;
+InvasionCycles = 10;
 params.T = CyclePeriod; % hours
 params.t_vals = transpose(0:params.dt:params.T); % time
 
@@ -81,7 +83,7 @@ TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
-steadystatethresh = 1e-1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
+steadystatethresh = 1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
 
 InvasionSteadyStateDensity = zeros(length(InvasionVariable),length(InvasionVariable),10);
 InvasionSSCycles = zeros(length(InvasionVariable),length(InvasionVariable));
@@ -90,7 +92,7 @@ InvasionSSCycles = zeros(length(InvasionVariable),length(InvasionVariable));
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
 S0 = 1e7; %Initial concentration of susceptibles in flask (per mL)
 V01= 1e4; %initial concentration of virus in flask (per mL)
-V02 = 1e2;
+V02 = 10*steadystatethresh; %Initial mutant concentration 10* threshold density
 
 %% Initiate parallel pool
 poolobj = parpool(numNodes);
@@ -129,7 +131,6 @@ parfor resident = 1:length(InvasionVariable)
         % Add mutant and do invasions
         InvasionIC = x0 + [zeros(1,9) V02];
         InvasionforResident = zeros(length(InvasionVariable),10);
-        InvasionCyclesforResident = zeros(length(InvasionVariable),1);
         for mutant = 1:length(InvasionVariable)
             if(mutant ~= resident)
 
@@ -146,22 +147,16 @@ parfor resident = 1:length(InvasionVariable)
                 %initial population for the previous epoch for atleast 10 cycles OR,
                 %2. The total number of cycles hits the max number of cycles.
                 
-                while ( (sum(abs(x0 - y(1,:)) > steadystatethresh) >= 1) || steadyrep < 10) && iter < MaxCycles+10
-                    if((sum(abs(x0 - y(1,:)) > steadystatethresh) < 1))
-                                steadyrep = steadyrep+1;
-                    end
-                    iter = iter+1;            
+                for iter = 1:InvasionCycles           
                     [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);
                     x0 = [R0 S0 zeros(1,8)] + y(end,:)*TransferMatrix;
                 end
             InvasionforResident(mutant,:) = x0;  
-            InvasionCyclesforResident(mutant) = iter;
             
             end
         end
         InvasionSteadyStateDensity(resident,:,:) = InvasionforResident;
-        InvasionSSCycles(resident,:) = InvasionCyclesforResident;
-
+        
     end
     toc
     delete(poolobj);
