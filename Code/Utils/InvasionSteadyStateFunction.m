@@ -29,7 +29,7 @@
 % each cell type for all strategies evaluated but does not have the
 % dynamics for the strategies.
 
-function [InvasionSteadyStateDensity, InvasionSSCycles] = InvasionSteadyStateFunction(CyclePeriod,p_L,p_V,InvasionVariable,numNodes,SaveFlag, varargin)
+function [InvasionDensity, CyclesToInvasion] = InvasionSteadyStateFunction(CyclePeriod,p_L,p_V,InvasionVariable,numNodes,SaveFlag, varargin)
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
 if nargin == 6
@@ -79,14 +79,16 @@ p_E = 0;
 p_I = 0;
 p_L = p_L;
 p_V = p_V;
+p_Total = p_E+p_I+p_L+p_V;
+
 TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
 steadystatethresh = 1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
 
-InvasionSteadyStateDensity = zeros(length(InvasionVariable),length(InvasionVariable),10);
-InvasionSSCycles = zeros(length(InvasionVariable),length(InvasionVariable));
+InvasionDensity = zeros(length(InvasionVariable),length(InvasionVariable),10);
+CyclesToInvasion = zeros(length(InvasionVariable),length(InvasionVariable));
 
 %% initial conditions
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
@@ -129,34 +131,43 @@ parfor resident = 1:length(InvasionVariable)
         end
         
         % Add mutant and do invasions
-        InvasionIC = x0 + [zeros(1,9) V02];
+        InvasionIC = x0 + [zeros(1,7) p_L*V02/p_Total 0 p_V*V02/p_Total];
+
         InvasionforResident = zeros(length(InvasionVariable),10);
+        CyclesToInvasionGivenResident = zeros(length(InvasionVariable),1);
+
         for mutant = 1:length(InvasionVariable)
             if(mutant ~= resident)
 
                 Params.q = [InvasionVariable(resident,1) InvasionVariable(mutant,1)];
                 Params.gamma = [InvasionVariable(resident,2) InvasionVariable(mutant,2)];
                 %First cycle
-                [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, InvasionIC, options, Params);        
-                % Cycles till steady state or till MaxCycles
-                iter = 1;
-                steadyrep = 0;
-                x0 = [R0 S0 zeros(1,8)] + y(end,:)*TransferMatrix;
-                % loop continues till:
-                %1. The initial population for the new epoch becomes (almost) equal to the
-                %initial population for the previous epoch for atleast 10 cycles OR,
-                %2. The total number of cycles hits the max number of cycles.
-                
-                for iter = 1:InvasionCycles           
-                    [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);
-                    x0 = [R0 S0 zeros(1,8)] + y(end,:)*TransferMatrix;
+                x0 = InvasionIC;
+                InvasionTerminationFlag = 0;
+                InvasionSeries = zeros(InvasionCycles+1,10);
+                InvasionSeries(1,:) = x0;
+                InvasionIterations = 0;
+                while ~InvasionTerminationFlag
+                    
+                    for ii = 1:InvasionCycles           
+                        [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);
+                        x0 = [R0 S0 zeros(1,8)] + y(end,:)*TransferMatrix;
+                        InvasionSeries(ii+1,:) = x0;
+                        InvasionIterations = InvasionIterations+1;
+                    end
+                    
+                    if (sum(InvasionSeries(end,4:2:end),2) > V02) & sum(InvasionSeries(end,4:2:end),2) > sum(InvasionSeries(end-1,4:2:end),2)
+                       InvasionTerminationFlag = 1;
+                    elseif (sum(InvasionSeries(end,4:2:end),2) < V02) & sum(InvasionSeries(end,4:2:end),2) < sum(InvasionSeries(end-1,4:2:end),2)     
+                        InvasionTerminationFlag = 1;
+                    end
                 end
-            InvasionforResident(mutant,:) = x0;  
-            
+                InvasionforResident(mutant,:) = InvasionSeries(end,:);  
+                CyclesToInvasionGivenResident(mutant) = InvasionIterations;
             end
         end
-        InvasionSteadyStateDensity(resident,:,:) = InvasionforResident;
-        
+        InvasionDensity(resident,:,:) = InvasionforResident;
+        CyclesToInvasion(resident,:) = CyclesToInvasionGivenResident;
     end
     toc
     delete(poolobj);
