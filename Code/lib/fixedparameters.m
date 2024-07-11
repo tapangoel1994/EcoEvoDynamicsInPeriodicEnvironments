@@ -26,6 +26,7 @@ params.bet = 50;
 params.flask_volume = 1000; %volume in mL
 params.dt = 1/30; % hours
 MaxCycles = 50000;
+InvasionCycles = 10;
 steadystatethresh = 1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
 
 %% Numerical method related parameters
