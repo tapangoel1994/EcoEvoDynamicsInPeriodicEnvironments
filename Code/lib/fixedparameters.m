@@ -23,13 +23,27 @@ params.bet = 50;
 
 
 %% Simulation parameters:
-params.flask_volume = 1000; %volume in mL
+
 params.dt = 1/30; % hours
-MaxCycles = 50000;
-InvasionCycles = 10;
-steadystatethresh = 1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
+MaxCycles = 50000; % Max number of cycles to steady state before while loop terminates
+InvasionCycles = 10;% Number of cycles in each set to evaluate transients during invasion
+criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical in per mL
+params.flask_volume = 1/criticaldensitythreshold; %volume in mL
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
+
+%% Initial conditions
+R0 = 1e2; %ug/mL
+S0 = 1e7; % cells/mL
+Va_0 = 1e4; %virions/mL
+Vb_0 = 10*criticaldensitythreshold;
+
+%% Transfer parameters
+q_R = 1;
+q_S = 0;
+q_E = 0;
+q_I = 0;
+
 
 %save('fixedparameters.mat');
