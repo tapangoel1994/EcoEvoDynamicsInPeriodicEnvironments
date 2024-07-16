@@ -6,11 +6,11 @@
 
 %%Input:
 % t = timepoint
-% y = (R(t),S(t),E1(t),E2(t),I1(t),I2(t),L1(t),L2(t),V1(t),V2(t)) : system CONCENTRATION state at timepoint t.
+% y = (R(t),S(t),Ea(t),Eb(t),Ia(t),Ib(t),La(t),Lb(t),Va(t),Vb(t)) : system CONCENTRATION state at timepoint t.
 % params = structure of parameter values with.
 
 %%Output:
-% dydt = d(R(t),S(t),E1(t),E2(t),I1(t),I2(t),L1(t),L2(t),V1(t),V2(t))/dt : the derivative of the system state at timepoint t
+% dydt = d(R(t),S(t),Ea(t),Eb(t),Ia(t),Ib(t),La(t),Lb(t),Va(t),Vb(t))/dt : the derivative of the system state at timepoint t
 
 function dydt = ODE_RSEILV_2species(t,y,params)
 
