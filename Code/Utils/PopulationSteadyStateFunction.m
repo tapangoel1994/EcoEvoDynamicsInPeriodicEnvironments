@@ -83,7 +83,12 @@ TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
-criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical
+
+MaxCycles = 50000; % Max number of cycles to steady state before while loop terminates
+InvasionCycles = 10;% Number of cycles in each set to evaluate transients during invasion
+criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical in per mL
+params.flask_volume = 1/criticaldensitythreshold; %volume in mL      
+
 
 SteadyStateDensityTemp = zeros(length(Q)*length(Gamma),10);
 SteadyStateDensity = zeros(length(Q),length(Gamma),10);
