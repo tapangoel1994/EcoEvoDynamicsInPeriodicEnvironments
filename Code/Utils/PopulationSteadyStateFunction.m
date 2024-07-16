@@ -22,7 +22,7 @@
 
 %% Output:
 % Script generates a .mat file named:
-% "CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,p_L=<p_L>,p_V=<p_V>.mat"
+% "SteadyState_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,p_L=<p_L>,p_V=<p_V>.mat"
 % that contains all the variables in the workspace from the simulation.
 % Note that the output file has variables for the steady state values of
 % each cell type for all strategies evaluated but does not have the
@@ -32,7 +32,6 @@ function [SteadyStateDensity, SSCycles] = PopulationSteadyStateFunction(CyclePer
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
 if nargin == 7
-
     %% Life history parameters (units of hours, micrograms and mL). 
     params.J = 0; %ug/mL-h
     params.conversion_efficiency = 5e-7; %ug/cell
@@ -56,10 +55,14 @@ if nargin == 7
     params.q = [0 0];
     params.gamma = [0 0];
     
-    %% simulation parameters:
-    params.flask_volume = 500; %volume in mL
+    
+    %% Simulation parameters:
+    
     params.dt = 1/30; % hours
-   
+    MaxCycles = 50000; % Max number of cycles to steady state before while loop terminates
+    InvasionCycles = 10;% Number of cycles in each set to evaluate transients during invasion
+    criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical in per mL
+    params.flask_volume = 1/criticaldensitythreshold; %volume in mL      
 else 
     params = varargin{1}; %% if life history and simulation parameters were added as function input, assign them to the params variable.
 end
@@ -67,7 +70,7 @@ end
 params.T = CyclePeriod; % hours
 params.t_vals = transpose(0:params.dt:params.T); % time
 
-MaxCycles = 50000;
+
 
 %% filter parameters
 p_R = 1;
@@ -76,11 +79,11 @@ p_E = 0;
 p_I = 0;
 p_L = p_L;
 p_V = p_V;
-TransferMatrix = diag([0 p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
-steadystatethresh = 1e-1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
+criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical
 
 SteadyStateDensityTemp = zeros(length(Q)*length(Gamma),10);
 SteadyStateDensity = zeros(length(Q),length(Gamma),10);
@@ -90,8 +93,8 @@ SSCycles = zeros(length(Q),length(Gamma));
 %% initial conditions
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
 S0 = 1e7; %Initial concentration of susceptibles in flask (per mL)
-V01= 1e4; %initial concentration of virus in flask (per mL)
-V02 = 0;
+Va_0= 1e4; %initial concentration of virus in flask (per mL)
+Vb_0 = 0;
 
 %% Initiate parallel pool
 poolobj = parpool(numNodes);
@@ -104,7 +107,7 @@ parfor ii = 1:length(Q)*length(Gamma)
         Params.gamma = [Gamma(j) 0];
         
         %% First cycle
-        x0 = [R0 S0 zeros(1,6) V01 V02];
+        x0 = [R0 S0 zeros(1,6) Va_0 0];
         [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);
         
         %TimeSeries = y;
@@ -123,9 +126,9 @@ parfor ii = 1:length(Q)*length(Gamma)
         %initial population for the previous epoch for atleast 10 cycles OR,
         %2. The total number of cycles hits the max number of cycles.
         
-        while ( (sum(abs(x0 - y(1,:)) > steadystatethresh) >= 1) || steadyrep < 10) && iter < MaxCycles+10
+        while ( (sum(abs(x0 - y(1,:)) > criticaldensitythreshold) >= 1) || steadyrep < 10) && iter < MaxCycles+10
             
-            if((sum(abs(x0 - y(1,:)) > steadystatethresh) < 1))
+            if((sum(abs(x0 - y(1,:)) > criticaldensitythreshold) < 1))
                         steadyrep = steadyrep+1;
             end
         
@@ -158,7 +161,7 @@ if SaveFlag == 1
      if ~isfolder('..\Data\')
         mkdir('..\Data\');
     end
-    filename = sprintf("..\\Data\\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,V01,p_L,p_V);
+    filename = sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,p_L,p_V);
     save(filename);
 end
 

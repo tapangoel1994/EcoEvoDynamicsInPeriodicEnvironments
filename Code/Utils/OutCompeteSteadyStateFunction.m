@@ -1,5 +1,5 @@
 %%Code takes one-host two-virus system and sweeps over q for a fixed gamma or gamma for a fixed q keeping
-%other parameters fixed and does invasion analysis. Uses an RSEILV model with no MOI dependence. 
+%other parameters fixed and does outcompetition analysis. Uses an RSEILV model with no MOI dependence. 
 % Obtain appropriate steady state densities for
 % every resident mutant pair and generate a heatmap. 
 
@@ -22,7 +22,7 @@
 
 %% Output:
 % Script generates a .mat file named:
-% "OutCompeteCyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,p_L=<p_L>,p_V=<p_V>.mat"
+% "OutCompete_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,p_L=<p_L>,p_V=<p_V>.mat"
 % that contains all the variables in the workspace from the simulation.
 % Note that the output file has variables for the steady state values of
 % each cell type for all strategies evaluated but does not have the
@@ -57,7 +57,8 @@ if nargin == 6
     params.gamma = [0 0];
     
     %% simulation parameters:
-    params.flask_volume = 500; %volume in mL
+    criticaldensitythreshold = 1e-3;
+    params.flask_volume = 1/criticaldensitythreshold; %volume in mL
     params.dt = 1/30; % hours
     
 
@@ -81,7 +82,8 @@ TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
-steadystatethresh = 1e-1/params.flask_volume; % concentration difference below which two concentrations are treated as identical
+criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical
+params.flask_volume = 1/criticaldensitythreshold;
 
 OutcompeteSteadyStateDensity = zeros(length(InvasionVariable),length(InvasionVariable),10);
 OutCompeteSSCycles = zeros(length(InvasionVariable),length(InvasionVariable));
@@ -89,8 +91,8 @@ OutCompeteSSCycles = zeros(length(InvasionVariable),length(InvasionVariable));
 %% initial conditions
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
 S0 = 1e7; %Initial concentration of susceptibles in flask (per mL)
-V01= 1e4; %initial concentration of virus in flask (per mL)
-V02 = 1e2;
+Va_0= 1e4; %initial concentration of virus in flask (per mL)
+Vb_0 = 10*criticaldensitythreshold;
 
 %% Initiate parallel pool
 poolobj = parpool(numNodes);
@@ -106,7 +108,7 @@ parfor resident = 1:length(InvasionVariable)
         %% Resident dynamics to steady state
         
         %First cycle
-        x0 = [R0 S0 zeros(1,6) V01 0];
+        x0 = [R0 S0 zeros(1,6) Va_0 0];
         [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);        
         % Cycles till steady state or till MaxCycles
         iter = 1;
@@ -117,8 +119,8 @@ parfor resident = 1:length(InvasionVariable)
         %initial population for the previous epoch for atleast 10 cycles OR,
         %2. The total number of cycles hits the max number of cycles.
         
-        while ( (sum(abs(x0 - y(1,:)) > steadystatethresh) >= 1) || steadyrep < 10) && iter < MaxCycles+10
-            if((sum(abs(x0 - y(1,:)) > steadystatethresh) < 1))
+        while ( (sum(abs(x0 - y(1,:)) > criticaldensitythreshold) >= 1) || steadyrep < 10) && iter < MaxCycles+10
+            if((sum(abs(x0 - y(1,:)) > criticaldensitythreshold) < 1))
                         steadyrep = steadyrep+1;
             end
             iter = iter+1;            
@@ -127,7 +129,8 @@ parfor resident = 1:length(InvasionVariable)
         end
         
         % Add mutant and do invasions
-        InvasionIC = x0 + [zeros(1,9) V02];
+         InvasionIC = x0 + [0 0 0 p_E*Vb_0 0 p_I*Vb_0 0 p_L*Vb_0 0 p_V*Vb_0]./p_Total;
+
         InvasionforResident = zeros(length(InvasionVariable),10);
         InvasionCyclesforResident = zeros(length(InvasionVariable),1);
         for mutant = 1:length(InvasionVariable)
@@ -146,8 +149,8 @@ parfor resident = 1:length(InvasionVariable)
                 %initial population for the previous epoch for atleast 10 cycles OR,
                 %2. The total number of cycles hits the max number of cycles.
                 
-                while ( (sum(abs(x0 - y(1,:)) > steadystatethresh) >= 1) || steadyrep < 10) && iter < MaxCycles+10
-                    if((sum(abs(x0 - y(1,:)) > steadystatethresh) < 1))
+                while ( (sum(abs(x0 - y(1,:)) > criticaldensitythreshold) >= 1) || steadyrep < 10) && iter < MaxCycles+10
+                    if((sum(abs(x0 - y(1,:)) > criticaldensitythreshold) < 1))
                                 steadyrep = steadyrep+1;
                     end
                     iter = iter+1;            
@@ -171,7 +174,7 @@ if SaveFlag == 1
     if ~isfolder('..\Data\')
         mkdir('..\Data\');
     end
-    filename = sprintf("..\\Data\\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,V01,p_L,p_V);
+    filename = sprintf("..\\Data\\Outcompete_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,p_L,p_V);
     save(filename);
 end
 
