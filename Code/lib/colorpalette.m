@@ -37,6 +37,9 @@ end
 set(groot, 'defaultAxesFontName', 'Times New Roman');
 set(groot, 'defaultTextFontName', 'Times New Roman');
 
-
+PIPColorMap = [1 0 0;... %invasion invalid because no resident
+               1 1 1;... %invasion failed
+               .5 .5 .5;...%resident =  mutant
+               0 0 0]; % invasion success
 
 %save('colorpalette.mat');
