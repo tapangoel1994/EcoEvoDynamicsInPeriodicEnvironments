@@ -129,7 +129,7 @@ for conditions = 1:3
     ylim([1e-2 1e10]);
     set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',[],'YTick',logspace(-2,10,4),'YTickLabel',[]);
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
-    legend('R','S','E','I','L','V','FontName','Times','FontWeight','bold','FontSize',14,'location','best');
+    
     text(-1,1e10,'(B)','FontSize',16,'FontWeight','bold');
     hold off;
     
@@ -233,19 +233,37 @@ for conditions = 1:3
     
     nexttile(6)
     ylabel('Density (mL$^{-1}$)','FontSize',18,'FontWeight','bold','FontName','Times');
-    title(t_main,sprintf("Filtration condition: %s pass through",figuretitles{conditions}),'FontSize',20,'FontWeight','bold','FontName','Times','interpreter','latex');
     
+     %% Figure title
+    titlehandle = title(t_main,{sprintf("Filtration condition: %s pass through",figuretitles{conditions});""},'FontSize',20,'FontWeight','bold','FontName','Times','interpreter','latex');
+    
+    %% Add legends
+    nexttile(t_main,1,[1 2]);
+    legend('R','S','E','I','L','V','FontName','Times','FontWeight','bold','FontSize',14,'Position',[0.0897,0.9154,0.2977,0.03299],'orientation','horizontal');
+    legend('Box','off');
+    nexttile(t_main,3,[1 3]);
+    hold on;
+    lh(1) = plot(nan,nan,'dk');
+    lh(2) = plot(nan,nan,'sk');
+    lh(3) = plot(nan,nan,'ok');
+    L{1} = 'Obligately lytic';
+    L{2} = 'Temperate';
+    L{3} = 'Obligately lysogenic';
+    legend(lh,L,'Position',[0.5114,0.9154,0.4297,0.03379],'Orientation','horizontal','Box','off');
+    legend('Box','off');
+
+   
     %% Save Figure
     filename = dir(['..\Figures\CycleToCycle_SI' num2str(conditions) '*']);
     
     if isempty(filename)
         filename = ['..\Figures\CycleToCycle_SI' num2str(conditions) '_v1.eps'];
     else
-        filename = filename(end).name;
+        filename = ['..\Figures\' filename(end).name];
         version = extractBetween(filename,"_v",".");
         version = version{1};
         version = str2num(version);
-        filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
+        filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
     end
     saveas(supfig3_1,filename,'epsc');
 end

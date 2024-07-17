@@ -30,9 +30,9 @@ TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
 %% initial conditions
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
 S0 = 1e7; %Initial concentration of susceptibles in flask (per mL)
-V01= 1e4; %initial concentration of virus in flask (per mL)
-V02 = 0;
-x0 = [R0 S0 zeros(1,6) V01 V02];
+Va_0= 1e4; %initial concentration of virus in flask (per mL)
+Vb_0 = 0;
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 
 
 %% Initiate figure
@@ -56,7 +56,7 @@ params.q = [0 0];
 params.gamma = [0 0];
 T_lytic = [];
 Y_lytic = [];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 for iter = 1:NCycles
     [t_vals, y_lytic] = ode113(@ODE_RSEILV_2Species, params.t_vals, x0, options, params);
     T_lytic = [T_lytic; params.T*(iter-1) + t_vals];
@@ -68,7 +68,7 @@ params.q = [1 0];
 params.gamma = [0 0];
 T_lysogenic = [];
 Y_lysogenic = [];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 for iter = 1:NCycles
     [t_vals, y_lysogenic] = ode113(@ODE_RSEILV_2Species, params.t_vals, x0, options, params);
     T_lysogenic = [T_lysogenic; params.T*(iter-1) + t_vals];
@@ -78,7 +78,7 @@ end
 %% Temperate
 params.q = [.5 0];
 params.gamma = [.083 0];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 T_temperate = [];
 Y_temperate = [];
 for iter = 1:NCycles
@@ -148,7 +148,7 @@ params.q = [0 0];
 params.gamma = [0 0];
 T_lytic = [];
 Y_lytic = [];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 for iter = 1:NCycles
     [t_vals, y_lytic] = ode113(@ODE_RSEILV_2Species, params.t_vals, x0, options, params);
     T_lytic = [T_lytic; params.T*(iter-1) + t_vals];
@@ -160,7 +160,7 @@ params.q = [1 0];
 params.gamma = [0 0];
 T_lysogenic = [];
 Y_lysogenic = [];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 for iter = 1:NCycles
     [t_vals, y_lysogenic] = ode113(@ODE_RSEILV_2Species, params.t_vals, x0, options, params);
     T_lysogenic = [T_lysogenic; params.T*(iter-1) + t_vals];
@@ -170,7 +170,7 @@ end
 %% Temperate
 params.q = [.5 0];
 params.gamma = [.083 0];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 T_temperate = [];
 Y_temperate = [];
 for iter = 1:NCycles
@@ -232,7 +232,7 @@ params.q = [0 0];
 params.gamma = [0 0];
 T_lytic = [];
 Y_lytic = [];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 for iter = 1:NCycles
     [t_vals, y_lytic] = ode113(@ODE_RSEILV_2Species, params.t_vals, x0, options, params);
     T_lytic = [T_lytic; params.T*(iter-1) + t_vals];
@@ -244,7 +244,7 @@ params.q = [1 0];
 params.gamma = [0 0];
 T_lysogenic = [];
 Y_lysogenic = [];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 for iter = 1:NCycles
     [t_vals, y_lysogenic] = ode113(@ODE_RSEILV_2Species, params.t_vals, x0, options, params);
     T_lysogenic = [T_lysogenic; params.T*(iter-1) + t_vals];
@@ -254,7 +254,7 @@ end
 %% Temperate
 params.q = [.5 0];
 params.gamma = [.083 0];
-x0 = [R0 S0 zeros(1,6) V01 V02];
+x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 T_temperate = [];
 Y_temperate = [];
 for iter = 1:NCycles
