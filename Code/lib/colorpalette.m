@@ -36,7 +36,7 @@ end
 % Optionally, set a consistent font style, e.g., 'Times New Roman'
 set(groot, 'defaultAxesFontName', 'Times New Roman');
 set(groot, 'defaultTextFontName', 'Times New Roman');
-
+set(groot,'defaultLineMarkerSize',8);
 PIPColorMap = [1 0 0;... %invasion invalid because no resident
                1 1 1;... %invasion failed
                .5 .5 .5;...%resident =  mutant
