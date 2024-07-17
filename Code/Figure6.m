@@ -26,8 +26,8 @@ V01 = 1e4;
 
 
 for index = 1:2
-    if isfile(sprintf("..\Data\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
-        load(sprintf("..\Data\CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
+    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
+        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
@@ -38,18 +38,21 @@ end
 for index = 1:2
     
     SteadyState_temp = SteadyState{index};
-    [M,I] = max(SteadyState_temp(:,:,7),[],"all","linear");
+    [M,I] = max(sum(SteadyState_temp(:,:,3:2:10),3),[],"all","linear");
     [j,i]=ind2sub([length(Q),length(Gamma)],I);
     
     
     InvasionVariable = [Q' Gamma(i)*ones(size(Q'))];
-    %InvasionVariable = [Q' Gamma(i)*ones(size(Q'))];
-    if isfile(sprintf("..\Data\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
-        load(sprintf("..\Data\InvasionCyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
-        Invasion{index} = InvasionSteadyStateDensity;
-        CyclesInvasion{index} = InvasionSSCycles;
+    
+    if isfile(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,p_LV(index,1),p_LV(index,2)))
+        load(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,p_LV(index,1),p_LV(index,2)));
+        Invasion{index} = InvasionDensity;
+        CyclesInvasion{index} = CyclesToInvasion;
+        InvasionSuccessMatrix{index} = InvasionMatrix;
+
     else
-        [Invasion{index}, CyclesInvasion{index}] = InvasionSteadyStateFunction(CyclePeriodList(index),p_LV(index,1),p_LV(index,2),InvasionVariable,NumNodes,1,params);
+        [Invasion{index}, InvasionSuccessMatrix{index}, CyclesInvasion{index}] = InvasionDynamics(CyclePeriod,p_LV(index,1),p_LV(index,2),InvasionVariable,NumNodes,1,params);
+        
     end
 
 
@@ -63,30 +66,18 @@ for index = 2:-1:1
     
     SteadyState_temp = SteadyState{index};
     SteadyState_temp = squeeze(sum(SteadyState_temp(:,:,3:10),3));
+    InvasionSuccess_temp = InvasionSuccessMatrix{index};
     M = max(SteadyState_temp,[],"all","linear");
     [r,c] = find(SteadyState_temp == M);
     j = max(r);
     i = max(c);
-
-    Invasion_temp = Invasion{index};
-    resident = squeeze(sum(Invasion_temp(:,:,3:2:end),3));
-    mutant = squeeze(sum(Invasion_temp(:,:,4:2:end),3));
-
-    reswin = (resident > 1e-1/params.flask_volume) & (mutant < 1e-1/params.flask_volume);
-    mutwin = (resident < 1e-1/params.flask_volume) & (mutant > 1e-1/params.flask_volume);
-    coexist = (resident > 1e-1/params.flask_volume) & (mutant > 1e-1/params.flask_volume);
-    alldie = (resident < 1e-1/params.flask_volume) & (mutant < 1e-1/params.flask_volume);
-
-    InvasionSuccess = zeros(length(Q),length(Q));
-    %InvasionSuccess = mutwin*2 + coexist*1 - reswin*1 - alldie*2;
-    InvasionSuccess = double(mutant > resident) - double(mutant < resident);
-    InvasionSuccess(1:length(Q)+1:end) = 0;
     
+     
     %% Plot steady state densities
     tile = nexttile();
     imagesc(Gamma,Q,SteadyState_temp);
     hold on;
-    plot(Gamma(i),Q(j),'*r','MarkerSize',5,'LineWidth',2);
+    plot(Gamma(i),Q(j),'*k','MarkerSize',5,'LineWidth',2);
     
     
     
@@ -108,17 +99,18 @@ for index = 2:-1:1
     hold off;
 
     %% Plot PIP
-    tile = nexttile;
-    imagesc(Q,Q,InvasionSuccess');
-    colormap(tile,flipud(gray));    
+   tile = nexttile;
+    imagesc(Q,Q,InvasionSuccess_temp');
+    colormap(tile,PIPColorMap);    
     xticks(linspace(0,1,5));
     xticklabels(linspace(0,1,5));
     yticks(linspace(0,1,5));
     yticklabels(linspace(0,1,5));
+    set(gca,'PlotBoxAspectRatio',[1 1 1]);
     set(gca,'YDir','normal','FontSize',14,'FontWeight','bold');
-    
     xlabel('p (resident)','FontSize',16,'FontWeight','bold'); 
     ylabel('p (mutant)','FontSize',16,'FontWeight','bold');
+
 
 end
 
@@ -130,16 +122,16 @@ nexttile(3);
 xline(.0832,'LineWidth',1.5,'Color','k','LineStyle','--');
 %% Add Annotations
 nexttile(1);
-text(.07225,.4175,'$(\gamma_{q_L=0.1},p_{q_L=0.1})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','red','BackgroundColor','white');
-text(.1445,.42,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','red');
+text(.07225,.4175,'$(\gamma_{q_L=0.1},p_{q_L=0.1})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(.1445,.42,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k');
 nexttile(2);
 text(.15,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.6,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.3,.75,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.3,.15,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 nexttile(3);
-text(.0495,.5175,'$(\gamma_{q_L=0.2},p_{q_L=0.2})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','red','BackgroundColor','white');
-text(.0832,.52,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','red');
+text(.0495,.5175,'$(\gamma_{q_L=0.2},p_{q_L=0.2})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(.0832,.52,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k');
 nexttile(4);
 text(.15,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.6,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
@@ -163,16 +155,15 @@ nexttile(3);
 title('Filtrate: 20\% lysogens only','FontSize',20,'FontWeight','bold','Position',[4.5 1.05]);
 
 %% Add labels for the invasion plots
+annotation('rectangle',[.873,.9037,.02,.02],'FaceColor',[1 1 1]);
+annotation('textbox',[.873,.9027,.02,.02],'String','$\mid$','FitBoxToText','on','EdgeColor','none','FontSize',12,'FontWeight','bold','Color',0*[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
+annotation('rectangle',[.8967,.9037,.02,.02],'FaceColor',0*[1 1 1]);
+annotation('textbox',[.8967,.9027,.02,.02],'String','+','FitBoxToText','on','EdgeColor','none','FontSize',20,'FontWeight','bold','Color',[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
 
-annotation('rectangle',[.9124,.9037,.02,.02],'FaceColor',[1 1 1]);
-annotation('textbox',[.9124,.9027,.02,.02],'String','$\mid$','FitBoxToText','on','EdgeColor','none','FontSize',12,'FontWeight','bold','Color',0*[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
-annotation('rectangle',[.942,.9037,.02,.02],'FaceColor',0*[1 1 1]);
-annotation('textbox',[.942,.9027,.02,.02],'String','+','FitBoxToText','on','EdgeColor','none','FontSize',20,'FontWeight','bold','Color',[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
-
-annotation('rectangle',[.9124,.428,.02,.02],'FaceColor',[1 1 1]);
-annotation('textbox',[.9124,.427,.02,.02],'String','$\mid$','FitBoxToText','on','EdgeColor','none','FontSize',12,'FontWeight','bold','Color',0*[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
-annotation('rectangle',[.942,.428,.02,.02],'FaceColor',0*[1 1 1]);
-annotation('textbox',[.942,.427,.02,.02],'String','+','FitBoxToText','on','EdgeColor','none','FontSize',20,'FontWeight','bold','Color',[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
+annotation('rectangle',[.873,.428,.02,.02],'FaceColor',[1 1 1]);
+annotation('textbox',[.873,.427,.02,.02],'String','$\mid$','FitBoxToText','on','EdgeColor','none','FontSize',12,'FontWeight','bold','Color',0*[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
+annotation('rectangle',[.8967,.428,.02,.02],'FaceColor',0*[1 1 1]);
+annotation('textbox',[.8967,.427,.02,.02],'String','+','FitBoxToText','on','EdgeColor','none','FontSize',20,'FontWeight','bold','Color',[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
 
 nexttile(2);
 text(1.16,.92,'Mutant invades','FontSize',16,'FontWeight','bold','Rotation',-90);
@@ -185,16 +176,16 @@ text(1.06,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotatio
 
 
 %% Save Figure
-filename = dir('..\Figures\ChangingFiltrationRatio*');
+filename = dir('..\\Figures\\ChangingFiltrationRatio*');
 
 if isempty(filename)
     filename = '..\Figures\ChangingFiltrationRatio_v1.eps';
 else
-    filename = filename(end).name;
+    filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
-    filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
+    filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
 saveas(h,filename,'epsc');
 

@@ -46,7 +46,7 @@ for index = 1:2
     
     
     InvasionVariable = [Q' .0832*ones(size(Q'))];
-    %InvasionVariable = [Q' Gamma(i)*ones(size(Q'))];
+    
     if isfile(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,p_LV(index,1),p_LV(index,2)))
         load(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,p_LV(index,1),p_LV(index,2)));
         Invasion{index} = InvasionDensity;
@@ -175,7 +175,7 @@ text(1.06,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotatio
 
 
 %% Save Figure
-filename = dir('..\\Figures\\SteadyStatePlusInvasion*');
+filename = dir('..\Figures\SteadyStatePlusInvasion*');
 
 if isempty(filename)
     filename = '..\Figures\SteadyStatePlusInvasion_v1.eps';
@@ -184,9 +184,7 @@ else
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
-    filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
-    filename1 = [extractBefore(filename,'.eps') '.png'];
+    filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
 saveas(h,filename,'epsc');
-saveas(h,filename1,'png');
 
