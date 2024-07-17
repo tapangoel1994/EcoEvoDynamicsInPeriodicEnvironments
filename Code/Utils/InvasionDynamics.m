@@ -187,6 +187,19 @@ parfor resident = 1:length(InvasionVariable)
     toc
     delete(poolobj);
 
+    %% If a diagonal index falls inside the nonfeasible zone, add it to the non-feasible zone
+    for diagindex = 2:length(InvasionVariable)-1
+        if InvasionMatrix(diagindex,diagindex-1) == -2 & InvasionMatrix(diagindex,diagindex+1) == -2
+            InvasionMatrix(diagindex,diagindex) = -2;
+        end
+    end
+
+    if InvasionMatrix(1,2) == -2
+        InvasionMatrix(1,1) = -2;
+    end
+    if InvasionMatrix(end,end-1) == -2
+        InvasionMatrix(end,end) = -2;
+    end
 %% Save workspace
 if SaveFlag == 1
     if ~isfolder('..\Data\')
