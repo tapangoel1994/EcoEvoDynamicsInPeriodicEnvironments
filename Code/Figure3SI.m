@@ -265,5 +265,5 @@ for conditions = 1:3
         version = str2num(version);
         filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
     end
-    saveas(supfig3_1,filename,'epsc');
+    exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
 end

@@ -94,9 +94,13 @@ for index = 2:-1:1
     c.FontSize = 14;
     c.Label.FontSize = 16;
     
+
     set(gca,'XScale','log','YScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',14); 
     xlabel('$\gamma$: Inducation rate (hr$^{-1}$)','FontSize',16,"FontWeight",'bold');
     ylabel( '$p$: Integration Probability','FontSize',16,"FontWeight",'bold');
+
+    c.Label.Position(1) = 4.7;
+
     hold off;
 
     %% Plot PIP
@@ -117,9 +121,9 @@ end
 
 %% Add vertical lines on the steady state plots
 nexttile(1)
-xline(.0832,'LineWidth',1.5,'Color','k','LineStyle','--');
+xline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
 nexttile(3)
-xline(.0832,'LineWidth',1.5,'Color','k','LineStyle','--');
+xline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
 %% Add Annotations
 nexttile(1);
 text(0.6210,0.0508,'$(\gamma_{V_{max}},p_{V_{max}})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
@@ -165,13 +169,13 @@ annotation('rectangle',[.8967,.428,.02,.02],'FaceColor',0*[1 1 1]);
 annotation('textbox',[.8967,.427,.02,.02],'String','+','FitBoxToText','on','EdgeColor','none','FontSize',20,'FontWeight','bold','Color',[1 1 1],'Interpreter','latex','HorizontalAlignment','center','VerticalAlignment','middle');
 
 nexttile(2);
-text(1.16,.92,'Mutant invades','FontSize',16,'FontWeight','bold','Rotation',-90);
-text(1.06,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotation',-90);
+text(1.18,.92,'Mutant invades','FontSize',16,'FontWeight','bold','Rotation',-90);
+text(1.08,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotation',-90);
 
 
 nexttile(4);
-text(1.16,.92,'Mutant invades','FontSize',16,'FontWeight','bold','Rotation',-90);
-text(1.06,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotation',-90);
+text(1.18,.92,'Mutant invades','FontSize',16,'FontWeight','bold','Rotation',-90);
+text(1.08,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotation',-90);
 
 
 %% Save Figure
@@ -186,5 +190,5 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-saveas(h,filename,'epsc');
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
 

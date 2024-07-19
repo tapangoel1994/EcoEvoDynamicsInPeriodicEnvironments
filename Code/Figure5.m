@@ -101,6 +101,7 @@ for index = 1:3
     set(gca,'XScale','log','YScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',12); 
     xlabel('$\gamma$: Inducation rate (hr$^{-1}$)','FontSize',14,"FontWeight",'bold');
     ylabel( '$p$: Integration Probability','FontSize',14,"FontWeight",'bold');
+    c.Label.Position(1) = 4.3167;
     hold off;
 
     %% Plot PIP
@@ -121,11 +122,11 @@ end
 
 %% Add vertical lines on the steady state plots
 nexttile(1)
-xline(MaximaPoint{1}(1),'LineWidth',1.5,'Color','k','LineStyle','--');
+xline(MaximaPoint{1}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
 nexttile(3);
-xline(MaximaPoint{2}(1),'LineWidth',1.5,'Color','k','LineStyle','--');
+xline(MaximaPoint{2}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
 nexttile(5);
-xline(MaximaPoint{3}(1),'LineWidth',1.5,'Color','k','LineStyle','--');
+xline(MaximaPoint{3}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
 %% Add Annotations
 nexttile(1);
 text(.07235,.91,'$(\gamma_{L_{max}}^{(12hr)},p_{L_{max}}^{(12hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
@@ -218,5 +219,5 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-saveas(h,filename,'epsc');
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
 

@@ -96,8 +96,9 @@ for index = 2:-1:1
     set(gca,'XScale','log','YScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',14); 
     xlabel('$\gamma$: Inducation rate (hr$^{-1}$)','FontSize',16,"FontWeight",'bold');
     ylabel( '$p$: Integration Probability','FontSize',16,"FontWeight",'bold');
+    c.Label.Position(1) = 4.5833;
     hold off;
-
+    
     %% Plot PIP
    tile = nexttile;
     imagesc(Q,Q,InvasionSuccess_temp');
@@ -117,9 +118,9 @@ end
 
 %% Add vertical lines on the steady state plots
 nexttile(1)
-xline(.1445,'LineWidth',1.5,'Color','k','LineStyle','--');
+xline(.1445,'LineWidth',1.5,'Color','r','LineStyle','-');
 nexttile(3);
-xline(.0832,'LineWidth',1.5,'Color','k','LineStyle','--');
+xline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
 %% Add Annotations
 nexttile(1);
 text(.07225,.4175,'$(\gamma_{q_L=0.1},p_{q_L=0.1})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
@@ -187,5 +188,5 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-saveas(h,filename,'epsc');
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
 

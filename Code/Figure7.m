@@ -48,7 +48,7 @@ t = tiledlayout(4,1,"TileSpacing",'compact','Padding','compact');
 
 %% Plot the viral fraction
 nexttile(1);
-semilogy(.99:MaxCycles-.01,p_V,'-*','Color',.25*[1 1 1],'LineWidth',2);
+semilogy(.99:MaxCycles-.01,p_V,'-*','Color',.25*[1 1 1],'LineWidth',2,'MarkerSize',4);
 ylim([10^-5.1 1e-1]);
 xlim([0 MaxCycles+5]);
 set(gca,'YMinorTick','off','Box','off','XTick',0:20:MaxCycles,'XTickLabel',[],'YTick',logspace(-5,-1,3));
@@ -124,15 +124,15 @@ nexttile(4);
 text(-16,10^10,'(D)','FontSize',16,'FontWeight','bold');
 %% Save Figure
 filename = dir('..\Figures\RandomSelections*');
-filename = filename(end).name;
 if isempty(filename)
     filename = '..\Figures\RandomSelections_v1.eps';
 else
+    filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
-    filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
+    filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-saveas(h,filename,'epsc');
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
 
 
