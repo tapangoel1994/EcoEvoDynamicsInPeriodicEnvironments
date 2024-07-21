@@ -126,13 +126,14 @@ nexttile(3)
 xline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
 %% Add Annotations
 nexttile(1);
-text(0.6210,0.0508,'$(\gamma_{V_{max}},p_{V_{max}})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+%text(0.6210,0.0508,'$(\gamma_{V_{max}},p_{V_{max}})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(0.6210,0.0508,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
 text(1,0,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',-15);
 nexttile(2);
 text(.75,.25,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.25,.75,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 nexttile(3);
-text(.0495,.5175,'$(\gamma_{L_{max}},p_{L_{max}})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(.0495,.5175,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
 text(.0832,.52,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k');
 nexttile(4);
 text(.15,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');

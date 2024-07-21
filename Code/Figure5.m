@@ -129,7 +129,8 @@ nexttile(5);
 xline(MaximaPoint{3}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
 %% Add Annotations
 nexttile(1);
-text(.07235,.91,'$(\gamma_{L_{max}}^{(12hr)},p_{L_{max}}^{(12hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+%text(.07235,.91,'$(\gamma_{L_{max}}^{(12hr)},p_{L_{max}}^{(12hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(.07235,.91,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
 text(MaximaPoint{1}(1),MaximaPoint{1}(2),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',40);
 nexttile(2);
 text(.25,.65,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
@@ -137,7 +138,8 @@ text(.85,.65,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAl
 text(.6,.85,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.6,.25,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 nexttile(3);
-text(.0505,.82,'$(\gamma_{L_{max}}^{(16hr)},p_{L_{max}}^{(16hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+%text(.0505,.82,'$(\gamma_{L_{max}}^{(16hr)},p_{L_{max}}^{(16hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(.0505,.82,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
 text(MaximaPoint{2}(1),MaximaPoint{2}(2),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k');
 nexttile(4);
 text(.15,.5,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
@@ -145,7 +147,8 @@ text(.75,.5,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAli
 text(.5,.75,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.5,.15,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 nexttile(5);
-text(.0505,.52,'$(\gamma_{L_{max}}^{(24hr)},p_{L_{max}}^{(24hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+%text(.0505,.52,'$(\gamma_{L_{max}}^{(24hr)},p_{L_{max}}^{(24hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(.0505,.52,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
 text(MaximaPoint{3}(1),MaximaPoint{3}(2),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k');
 nexttile(6);
 text(.15,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
