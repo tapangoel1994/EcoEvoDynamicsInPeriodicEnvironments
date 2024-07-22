@@ -2,6 +2,7 @@
 %% for the value of gamma over which the invasion dynamics have been calculated.
 %% this is to check that the excluded regions in the invasion analysis make sense. 
 
+%% This script generates figure S7.
 
 %% Author: Tapan Goel
 %% Date: 7/18/2024
@@ -87,6 +88,7 @@ for index = 1:2
 
 end
 
+%% Add plot titles
 xlabel(t,'$p$: Integration probability','FontSize',18,'Interpreter','latex');
 ylabel(t,{'Viral genome density (mL$^{-1}$)'},'FontSize',18,'Interpreter','latex');
 nexttile(t,1);

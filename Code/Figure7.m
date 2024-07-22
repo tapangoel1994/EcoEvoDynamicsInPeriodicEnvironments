@@ -1,8 +1,4 @@
-%%Code takes a range of one-host one-virus system with different (q,gamma) values and
-%%plays each
-%%strategy over 100 growth cycles each with randomly drawn passage
-%%probabilities. This is repeated a 100 times to see in how many cases the strategy persists.
-%%other parameters fixed. Uses an RSEILV model with no MOI dependence.
+%% Code generates figure 7 in the manuscript
 
 
 %% Date Created: 6/26/2024
@@ -11,7 +7,7 @@
 %% Life history parameters (units of hours, micrograms and mL). 
 clear all;
 close all;
-rng(0);
+rng(0); %initialize random number generator
 
 addpath('utils\');
 addpath('lib\');
@@ -73,9 +69,6 @@ for index = 1:3
     end
 
     nexttile(index+1);
-
-    %semilogy(.99:MaxCycles,timeseries(:,1),'LineWidth',2,'Color',linecolors.R);
-    
     semilogy(.99:MaxCycles,timeseries(:,2),'LineWidth',2,'Color',linecolors.S);
     hold on;
     semilogy(.99:MaxCycles,timeseries(:,3),'LineWidth',2,'Color',linecolors.E);
@@ -83,7 +76,6 @@ for index = 1:3
     semilogy(.99:MaxCycles,timeseries(:,7),'LineWidth',2,'Color',linecolors.L);
     semilogy(.99:MaxCycles,timeseries(:,9),'LineWidth',2,'Color',linecolors.V);
 
-    %semilogy(.99:5:MaxCycles,timeseries(1:5:end,1),'LineWidth',1,'Color',linecolors.R);
     semilogy(.99:5:MaxCycles,timeseries(1:5:end,2),'LineWidth',1,'Color',linecolors.S,'Marker',marker.(Strategies{index}),'LineStyle','none');
     semilogy(.99:5:MaxCycles,timeseries(1:5:end,3),'LineWidth',1,'Color',linecolors.E,'Marker',marker.(Strategies{index}),'LineStyle','none');
     semilogy(.99:5:MaxCycles,timeseries(1:5:end,5),'LineWidth',1,'Color',linecolors.I,'Marker',marker.(Strategies{index}),'LineStyle','none');
@@ -122,6 +114,7 @@ nexttile(3);
 text(-16,10^10,'(C)','FontSize',16,'FontWeight','bold');
 nexttile(4);
 text(-16,10^10,'(D)','FontSize',16,'FontWeight','bold');
+
 %% Save Figure
 filename = dir('..\Figures\Figure7*');
 if isempty(filename)

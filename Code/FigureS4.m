@@ -1,7 +1,7 @@
 %%Code to generate time series till invasion steady state for a two virus-host
 %%system for a given (q,gamma) pair.
-%%Uncomment the PlotTimeSeries function in the loop and elsewhere in the
-%%code to plot the time series for each epoch.
+
+%% this code generates figure S4
 
 %% Date created: 3/22/22024
 %% Author: Tapan Goel

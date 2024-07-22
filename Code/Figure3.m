@@ -1,5 +1,6 @@
-%%Code to simulate and plot multiple cycle for 3 different viral strategies over 24
+%% Code to simulate and plot multiple cycle for 3 different viral strategies over 24
 %%hours
+%% This code generates the graphs in figure 3. Note that the diagrams in panels B,D,F are added to the figure in inkscape.
 
 %% Date created: 6/13/2024
 %% Author: Tapan Goel

@@ -28,19 +28,20 @@ V01= 1e4; %initial concentration of virus in flask (per mL)
 V02 = 0;
 x0 = [R0 S0 zeros(1,6) V01 V02];
 
-PGamma = [0 0;.5 .083;1 0]; %% each row is the (p,gamma) for a particular strategy
+PGamma = [0 0;.5 .083;1 0]; % each row is the (p,gamma) for a particular strategy
 StrategyLabels = {'Obligately lytic','Temperate','Obligately lysogenic'};
 
 h = figure('Position',[100 0 400 1200]);
 t = tiledlayout(4,1,"TileSpacing",'compact','Padding','tight');
 
-for i = 1:length(PGamma)
+for i = 1:length(PGamma) %iterate over strategies
 
     params.p = [PGamma(i,1) 0];
     params.gamma = [PGamma(i,2) 0];
 
-    [t_vals,y] = ode113(@ODE_RSEILV_2Species,params.t_vals,x0,options,params);
-
+    [t_vals,y] = ode113(@ODE_RSEILV_2Species,params.t_vals,x0,options,params); %simulate one growth cycle
+    
+    %plot the timeseries for the 1 growth cycle.
     nexttile(i);
     semilogy(t_vals,y(:,1),'LineWidth',3,'Color',linecolors.R);  %Plot R
     hold on;
@@ -90,6 +91,7 @@ nexttile(3);
 text(-5.5,10^10,'(C)','FontSize',16,'FontWeight','bold');
 nexttile(4);
 text(-5.5,10^8,'(D)','FontSize',16,'FontWeight','bold');
+
 %% Save Figure
 filename = dir('..\Figure\Figure2*');
 

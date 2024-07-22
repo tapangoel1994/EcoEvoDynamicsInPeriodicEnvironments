@@ -1,5 +1,4 @@
-%%Code to simulate and plot multiple cycle for 3 different viral strategies over 24
-%%hours
+%% Code to generate figures S1, S2 and S3
 
 %% Date created: 6/13/2024
 %% Author: Tapan Goel
@@ -32,10 +31,11 @@ V02 = 0;
 x0 = [R0 S0 zeros(1,6) V01 V02];
 
 
-q_LV = [0 .2;.1 .1; .2 0];
+q_LV = [0 .2;.1 .1; .2 0]; %% each row represents a different filtration condition
+
 figuretitles = {"only virions", "virions and lysogens","only lysogens"};
 
-for conditions = 1:3
+for conditions = 1:3 %% iterate over different filtration conditions
     
     TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_LV(conditions,1) q_LV(conditions,1) q_LV(conditions,2) q_LV(conditions,2)]);
     

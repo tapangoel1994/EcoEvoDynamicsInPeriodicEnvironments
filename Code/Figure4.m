@@ -1,4 +1,4 @@
-%%Code to generate figure 4 of the manuscript: Steady State Density and PIP
+%% Code to generate figure 4 of the manuscript: Steady State Density and PIP
 %%plots for passaging only virions and only lysogens.
 
 %% Date created: 07/11/2024
@@ -17,7 +17,7 @@ fixedparameters;
 CyclePeriod = 24;
 Gamma = logspace(-3,0,51);
 P = linspace(0,1,51);
-NumNodes = 12;
+NumNodes = 12; %number of nodes used for parallel computing (if needed)
 
 %% Add missing simulation parameters
 params.T = CyclePeriod; % hours
@@ -28,8 +28,9 @@ S0 = 1e7;
 Va_0 = 1e4;
 Vb_0 = 10*criticaldensitythreshold;
 
+%% Load steady state density matrices (either from a datafile if it already exists or by running the utils\PopulationSteadyStateFunction if the data doesnt exist
 for index = 1:2
-    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)))
+    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2))) 
         load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
@@ -38,6 +39,8 @@ for index = 1:2
     end
 end
 
+
+%% Load invasion matrices (either from datafile or by running utils\InvasionDynamics.m
 for index = 1:2
     
     SteadyState_temp = SteadyState{index};

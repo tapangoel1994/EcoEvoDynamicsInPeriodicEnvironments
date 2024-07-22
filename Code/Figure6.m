@@ -4,9 +4,6 @@
 %% Date created: 05/29/2024
 %% Author: Tapan Goel
 
-%%Code pulled from scripts for steady state analysis and PIP analysis using
-%%parallelization
-
 close all; 
 clear all;
 
@@ -19,12 +16,12 @@ fixedparameters;
 CyclePeriodList = [24,24];
 Gamma = logspace(-3,0,51);
 P = linspace(0,1,51);
-NumNodes = 12;
+NumNodes = 12;  %number of nodes used for parallel computing (if needed)
 q_LV = [.2 0;.1 0];
 S0 = 1e7;
 V01 = 1e4;
 
-
+%% Load steady state density matrices (either from a datafile if it already exists or by running the utils\PopulationSteadyStateFunction if the data doesnt exist
 for index = 1:2
     if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V01,q_LV(index,1),q_LV(index,2)))
         load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V01,q_LV(index,1),q_LV(index,2)));
@@ -35,6 +32,7 @@ for index = 1:2
     end
 end
 
+%% Load invasion matrices (either from datafile or by running utils\InvasionDynamics.m
 for index = 1:2
     
     SteadyState_temp = SteadyState{index};

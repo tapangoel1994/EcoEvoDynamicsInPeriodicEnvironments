@@ -2,6 +2,7 @@
 %% for the value of gamma over which the invasion dynamics have been calculated.
 %% this is to check that the excluded regions in the invasion analysis make sense. 
 
+%% This script generates figure S6.
 
 %% Author: Tapan Goel
 %% Date: 7/18/2024
