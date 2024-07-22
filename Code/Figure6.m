@@ -18,20 +18,20 @@ fixedparameters;
 
 CyclePeriodList = [24,24];
 Gamma = logspace(-3,0,51);
-Q = linspace(0,1,51);
+P = linspace(0,1,51);
 NumNodes = 12;
-p_LV = [.2 0;.1 0];
+q_LV = [.2 0;.1 0];
 S0 = 1e7;
 V01 = 1e4;
 
 
 for index = 1:2
-    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
-        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
+    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,q_LV(index,1),q_LV(index,2)))
+        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,q_LV(index,1),q_LV(index,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
-        [SteadyState{index}, CyclesSteadyState{index}] = PopulationSteadyStateFunction(CyclePeriodList(index),p_LV(index,1),p_LV(index,2),Gamma,Q,NumNodes,1,params);
+        [SteadyState{index}, CyclesSteadyState{index}] = PopulationSteadyStateFunction(CyclePeriodList(index),q_LV(index,1),q_LV(index,2),Gamma,P,NumNodes,1,params);
     end
 end
 
@@ -39,19 +39,19 @@ for index = 1:2
     
     SteadyState_temp = SteadyState{index};
     [M,I] = max(sum(SteadyState_temp(:,:,3:2:10),3),[],"all","linear");
-    [j,i]=ind2sub([length(Q),length(Gamma)],I);
+    [j,i]=ind2sub([length(P),length(Gamma)],I);
     
     
-    InvasionVariable = [Q' Gamma(i)*ones(size(Q'))];
+    InvasionVariable = [P' Gamma(i)*ones(size(P'))];
     
-    if isfile(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,p_LV(index,1),p_LV(index,2)))
-        load(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,p_LV(index,1),p_LV(index,2)));
+    if isfile(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)))
+        load(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)));
         Invasion{index} = InvasionDensity;
         CyclesInvasion{index} = CyclesToInvasion;
         InvasionSuccessMatrix{index} = InvasionMatrix;
 
     else
-        [Invasion{index}, InvasionSuccessMatrix{index}, CyclesInvasion{index}] = InvasionDynamics(CyclePeriod,p_LV(index,1),p_LV(index,2),InvasionVariable,NumNodes,1,params);
+        [Invasion{index}, InvasionSuccessMatrix{index}, CyclesInvasion{index}] = InvasionDynamics(CyclePeriod,q_LV(index,1),q_LV(index,2),InvasionVariable,NumNodes,1,params);
         
     end
 
@@ -75,13 +75,13 @@ for index = 2:-1:1
      
     %% Plot steady state densities
     tile = nexttile();
-    imagesc(Q,Gamma,SteadyState_temp');
+    imagesc(P,Gamma,SteadyState_temp');
     hold on;
-    plot(Q(j),Gamma(i),'*k','MarkerSize',5,'LineWidth',2);
+    plot(P(j),Gamma(i),'*k','MarkerSize',5,'LineWidth',2);
     
     
     
-    contour(Q,Gamma,SteadyState_temp','k');
+    contour(P,Gamma,SteadyState_temp','k');
     yticks([1e-3 1e-2 1e-1 1e0]);
     yticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
     xticks(linspace(0,1,5));
@@ -101,7 +101,7 @@ for index = 2:-1:1
     
     %% Plot PIP
    tile = nexttile;
-    imagesc(Q,Q,InvasionSuccess_temp');
+    imagesc(P,P,InvasionSuccess_temp');
     colormap(tile,PIPColorMap);    
     xticks(linspace(0,1,5));
     xticklabels(linspace(0,1,5));
@@ -189,5 +189,7 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-%exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+filename1 = [filename(1:end-4) '.png'];
 
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+exportgraphics(h,filename1,"BackgroundColor",'white');

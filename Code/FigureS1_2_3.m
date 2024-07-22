@@ -17,12 +17,12 @@ params.T = 24; % hours
 params.t_vals = transpose(0:params.dt:params.T); % time
 NCycles = 20;
 %% filter parameters
-p_R = 0;
-p_S = 0;
-p_E = 0;
-p_I = 0;
-p_L = 0;
-p_V = 0;
+q_R = 0;
+q_S = 0;
+q_E = 0;
+q_I = 0;
+q_L = 0;
+q_V = 0;
 
 %% initial conditions
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
@@ -32,17 +32,17 @@ V02 = 0;
 x0 = [R0 S0 zeros(1,6) V01 V02];
 
 
-pLV = [0 .2;.1 .1; .2 0];
+q_LV = [0 .2;.1 .1; .2 0];
 figuretitles = {"only virions", "virions and lysogens","only lysogens"};
 
 for conditions = 1:3
     
-    TransferMatrix = diag([p_R p_S p_E p_E p_I p_I pLV(conditions,1) pLV(conditions,1) pLV(conditions,2) pLV(conditions,2)]);
+    TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_LV(conditions,1) q_LV(conditions,1) q_LV(conditions,2) q_LV(conditions,2)]);
     
     
     %% Obligately lytic
     % lysogen probability and induction rate
-    params.q = [0 0];
+    params.p = [0 0];
     params.gamma = [0 0];
     T_lytic = [];
     Y_lytic = [];
@@ -54,7 +54,7 @@ for conditions = 1:3
         x0 = [R0 S0 zeros(1,8)] + y_lytic(end,:)*TransferMatrix;
     end
     %% Purely lysogenic
-    params.q = [1 0];
+    params.p = [1 0];
     params.gamma = [0 0];
     T_lysogenic = [];
     Y_lysogenic = [];
@@ -66,7 +66,7 @@ for conditions = 1:3
         x0 = [R0 S0 zeros(1,8)] + y_lysogenic(end,:)*TransferMatrix;
     end
     %% Temperate
-    params.q = [.5 0];
+    params.p = [.5 0];
     params.gamma = [.083 0];
     x0 = [R0 S0 zeros(1,6) V01 V02];
     T_temperate = [];
@@ -111,7 +111,7 @@ for conditions = 1:3
     xlim([0 3.1*params.T]);
     set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',[],'YTick',logspace(-2,10,4));
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
-    text(-13,1e10,'(A)','FontSize',16,'FontWeight','bold');
+    text(-13,5e10,'(A)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -130,7 +130,7 @@ for conditions = 1:3
     set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',[],'YTick',logspace(-2,10,4),'YTickLabel',[]);
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
     
-    text(-1,1e10,'(B)','FontSize',16,'FontWeight','bold');
+    text(-1,5e10,'(B)','FontSize',16,'FontWeight','bold');
     hold off;
     
 
@@ -160,7 +160,7 @@ for conditions = 1:3
     xlim([0 3.1*params.T]);
     set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',[],'YTick',logspace(-2,10,4));
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
-    text(-13,1e10,'(C)','FontSize',16,'FontWeight','bold');
+    text(-13,5e10,'(C)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -178,7 +178,7 @@ for conditions = 1:3
     ylim([1e-2 1e10]);
     set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',[],'YTick',logspace(-2,10,4),'YTickLabel',[]);
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
-    text(-1,1e10,'(D)','FontSize',16,'FontWeight','bold');
+    text(-1,5e10,'(D)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -208,7 +208,7 @@ for conditions = 1:3
     set(gca,'YMinorTick','off','Box','off','XTick',0:8:3*params.T,'XTickLabel',0:8:3*params.T,'YTick',logspace(-2,10,4));
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
     xlabel('Time (hr)','FontSize',18,'FontWeight','bold','FontName','Times');
-    text(-13,1e10,'(E)','FontSize',16,'FontWeight','bold');
+    text(-13,5e10,'(E)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -227,7 +227,7 @@ for conditions = 1:3
     set(gca,'YMinorTick','off','Box','off','XTick',1:2:NCycles,'XTickLabel',2:2:NCycles,'YTick',logspace(-2,10,4),'YTickLabel',[]);
     set(gca,'FontSize',16,'FontWeight','bold','FontName','Times');
     xlabel('Number of cycles','FontSize',18,'FontWeight','bold','FontName','Times');
-    text(-1,1e10,'(F)','FontSize',16,'FontWeight','bold');
+    text(-1,5e10,'(F)','FontSize',16,'FontWeight','bold');
     hold off;
     
     
@@ -265,5 +265,8 @@ for conditions = 1:3
         version = str2num(version);
         filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
     end
-    exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+    filename1 = [filename(1:end-4) '.png'];
+
+    exportgraphics(supfig3_1,filename,"BackgroundColor",'none','ContentType','vector');
+    exportgraphics(supfig3_1,filename1,"BackgroundColor",'white');
 end

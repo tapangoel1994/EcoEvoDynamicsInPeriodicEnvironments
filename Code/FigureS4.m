@@ -18,7 +18,7 @@ fixedparameters;
 
 % lysogen probability and induction rate for the resident and the mutant
 % strains.
-params.q = [.5 .3];
+params.p = [.5 .3];
 params.gamma = [.083 .083];
 
 
@@ -28,12 +28,12 @@ params.t_vals = transpose(0:params.dt:params.T); % time
 MaxCycles = 10000;
 
 %% filter parameters
-p_S = 0;
-p_E = 0;
-p_I = 0;
-p_L = 0.2;
-p_V = 0.0;
-TransferMatrix = diag([0 p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+q_S = 0;
+q_E = 0;
+q_I = 0;
+q_L = 0.2;
+q_V = 0.0;
+TransferMatrix = diag([0 q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
@@ -224,7 +224,10 @@ else
     version = str2num(version);
     filename = ['..\Figures\' extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
 end
-exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+filename1 = [filename(1:end-4) '.png'];
+
+exportgraphics(fig,filename,"BackgroundColor",'none','ContentType','vector');
+exportgraphics(fig,filename1,"BackgroundColor",'white');
 
 
    

@@ -28,16 +28,16 @@ V01= 1e4; %initial concentration of virus in flask (per mL)
 V02 = 0;
 x0 = [R0 S0 zeros(1,6) V01 V02];
 
-QGamma = [0 0;.5 .083;1 0]; %% each row is the (q,gamma) for a particular strategy
+PGamma = [0 0;.5 .083;1 0]; %% each row is the (p,gamma) for a particular strategy
 StrategyLabels = {'Obligately lytic','Temperate','Obligately lysogenic'};
 
 h = figure('Position',[100 0 400 1200]);
 t = tiledlayout(4,1,"TileSpacing",'compact','Padding','tight');
 
-for i = 1:length(QGamma)
+for i = 1:length(PGamma)
 
-    params.q = [QGamma(i,1) 0];
-    params.gamma = [QGamma(i,2) 0];
+    params.p = [PGamma(i,1) 0];
+    params.gamma = [PGamma(i,2) 0];
 
     [t_vals,y] = ode113(@ODE_RSEILV_2Species,params.t_vals,x0,options,params);
 
@@ -94,12 +94,15 @@ text(-5.5,10^8,'(D)','FontSize',16,'FontWeight','bold');
 filename = dir('..\Figure\Figure2*');
 
 if isempty(filename)
-    filename = 'Figure2_v1.eps';
+    filename = '..\Figures\Figure2_v1.eps';
 else
     filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
-    filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
+    filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];    
 end
+filename1 = [filename(1:end-4) '.png'];
+
 exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+exportgraphics(h,filename1,"BackgroundColor",'white');

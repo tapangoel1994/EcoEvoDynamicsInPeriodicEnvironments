@@ -19,13 +19,13 @@ params.T = 24; % hours
 params.t_vals = transpose(0:params.dt:params.T); % time
 NCycles = 20;
 %% filter parameters
-p_R = 1;
-p_S = 0;
-p_E = 0;
-p_I = 0;
-p_L = 0.2;
-p_V = 0.0;
-TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+q_R = 1;
+q_S = 0;
+q_E = 0;
+q_I = 0;
+q_L = 0.2;
+q_V = 0.0;
+TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 %% initial conditions
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
@@ -45,14 +45,14 @@ t_main = tiledlayout(3,5,'TileSpacing','compact','Padding','compact');
 %%%%%%%%%%%%%%% Only virions passage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-p_L = 0.0;
-p_V = 0.2;
-TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+q_L = 0.0;
+q_V = 0.2;
+TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 
 %% Obligately lytic
 % lysogen probability and induction rate
-params.q = [0 0];
+params.p = [0 0];
 params.gamma = [0 0];
 T_lytic = [];
 Y_lytic = [];
@@ -64,7 +64,7 @@ for iter = 1:NCycles
     x0 = [R0 S0 zeros(1,8)] + y_lytic(end,:)*TransferMatrix;
 end
 %% Purely lysogenic
-params.q = [1 0];
+params.p = [1 0];
 params.gamma = [0 0];
 T_lysogenic = [];
 Y_lysogenic = [];
@@ -76,7 +76,7 @@ for iter = 1:NCycles
     x0 = [R0 S0 zeros(1,8)] + y_lysogenic(end,:)*TransferMatrix;
 end
 %% Temperate
-params.q = [.5 0];
+params.p = [.5 0];
 params.gamma = [.083 0];
 x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 T_temperate = [];
@@ -137,14 +137,14 @@ hold off;
 %%%%%%%%%%%%%%% Lysogens and virions passage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-p_L = 0.1;
-p_V = 0.1;
-TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+q_L = 0.1;
+q_V = 0.1;
+TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 
 %% Obligately lytic
 % lysogen probability and induction rate
-params.q = [0 0];
+params.p = [0 0];
 params.gamma = [0 0];
 T_lytic = [];
 Y_lytic = [];
@@ -156,7 +156,7 @@ for iter = 1:NCycles
     x0 = [R0 S0 zeros(1,8)] + y_lytic(end,:)*TransferMatrix;
 end
 %% Purely lysogenic
-params.q = [1 0];
+params.p = [1 0];
 params.gamma = [0 0];
 T_lysogenic = [];
 Y_lysogenic = [];
@@ -168,7 +168,7 @@ for iter = 1:NCycles
     x0 = [R0 S0 zeros(1,8)] + y_lysogenic(end,:)*TransferMatrix;
 end
 %% Temperate
-params.q = [.5 0];
+params.p = [.5 0];
 params.gamma = [.083 0];
 x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 T_temperate = [];
@@ -221,14 +221,14 @@ hold off;
 %%%%%%%%%%%%%%% Only lysogens passage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-p_L = 0.2;
-p_V = 0;
-TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+q_L = 0.2;
+q_V = 0;
+TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 
 %% Obligately lytic
 % lysogen probability and induction rate
-params.q = [0 0];
+params.p = [0 0];
 params.gamma = [0 0];
 T_lytic = [];
 Y_lytic = [];
@@ -240,7 +240,7 @@ for iter = 1:NCycles
     x0 = [R0 S0 zeros(1,8)] + y_lytic(end,:)*TransferMatrix;
 end
 %% Purely lysogenic
-params.q = [1 0];
+params.p = [1 0];
 params.gamma = [0 0];
 T_lysogenic = [];
 Y_lysogenic = [];
@@ -252,7 +252,7 @@ for iter = 1:NCycles
     x0 = [R0 S0 zeros(1,8)] + y_lysogenic(end,:)*TransferMatrix;
 end
 %% Temperate
-params.q = [.5 0];
+params.p = [.5 0];
 params.gamma = [.083 0];
 x0 = [R0 S0 zeros(1,6) Va_0 Vb_0];
 T_temperate = [];
@@ -310,7 +310,7 @@ ylabel('Total viral genome density (mL$^{-1})$','FontSize',18,'FontWeight','bold
 filename = dir('..\Figure\Figure3*');
 
 if isempty(filename)
-    filename = 'Figure3_v1.svg';
+    filename = '..\Figures\Figure3_v1.svg';
 else
     filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");
@@ -318,4 +318,4 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.svg'];
 end
-exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+saveas(h_main,filename);

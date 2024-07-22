@@ -18,20 +18,20 @@ fixedparameters;
 
 CyclePeriodList = [12,16,24];
 Gamma = logspace(-3,0,51);
-Q = linspace(0,1,51);
+P = linspace(0,1,51);
 NumNodes = 12;
-p_LV = [.2 0;.2 0;.2 0];
+q_LV = [.2 0;.2 0;.2 0];
 S0 = 1e7;
-V01 = 1e4;
+V0a = 1e4;
 
 
 for index = 1:3
-    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)))
-        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V01,p_LV(index,1),p_LV(index,2)));
+    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)))
+        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
-        [SteadyState{index}, CyclesSteadyState{index}] = PopulationSteadyStateFunction(CyclePeriodList(index),p_LV(index,1),p_LV(index,2),Gamma,Q,NumNodes,1,params);
+        [SteadyState{index}, CyclesSteadyState{index}] = PopulationSteadyStateFunction(CyclePeriodList(index),q_LV(index,1),q_LV(index,2),Gamma,P,NumNodes,1,params);
     end
 end
 
@@ -55,7 +55,7 @@ for index = 1:3
     i = max(c);
     
     nexttile(t,index);
-    semilogy(Q,SteadyState_temp(:,i),'LineWidth',2,'Color','k','Marker','o','MarkerFaceColor','k','MarkerSize',4);
+    semilogy(P,SteadyState_temp(:,i),'LineWidth',2,'Color','k','Marker','o','MarkerFaceColor','k','MarkerSize',4);
     hold on;
     yline(100*criticaldensitythreshold,'Color',[.5 .5 .5],'LineWidth',1.5,'LineStyle','--');
     ylim([1e-2 10*max(SteadyState_temp(:,i))]);
@@ -67,10 +67,10 @@ for index = 1:3
 
     %% Add inset figure
     ax_inset{index} = axes('Position',inset_position(index,:));
-    imagesc(Q,Gamma,SteadyState_temp');    
+    imagesc(P,Gamma,SteadyState_temp');    
     hold on;
     %plot(Gamma(i),Q(j),'*k','MarkerSize',5,'LineWidth',2);
-    contour(Q,Gamma,SteadyState_temp','k');
+    contour(P,Gamma,SteadyState_temp','k');
     yline(Gamma(i),'LineWidth',1.5,'Color','r');
     yticks([1e-3 1e-2 1e-1 1e0]);
     yticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
@@ -110,6 +110,11 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-%exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+filename1 = [filename(1:end-4) '.png'];
 
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+exportgraphics(h,filename1,"BackgroundColor",'white');
+
+
+   
 

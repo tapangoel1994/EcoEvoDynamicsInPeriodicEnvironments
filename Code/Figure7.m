@@ -40,7 +40,7 @@ V01= 1e4; %initial concentration of virus in flask (per mL)
 V02 = 0;
 x0 = [R0 S0 zeros(1,6) V01 V02];
 
-QGamma = [0 0;.5 .083;1 0]; %% each row is the (q,gamma) for a particular strategy
+QGamma = [0 0;.5 .083;1 0]; %% each row is the (q,gamma) for a particular strategyparams.q
 StrategyLabels = {'Obligately lytic','Temperate','Obligately lysogenic'};
 
 h = figure('Position',[100 0 600 1200]);
@@ -59,7 +59,7 @@ ylabel('$q_V$','FontSize',16,'FontWeight','bold');
 for index = 1:3
 
     y0 = x0;
-    params.q = [QGamma(index,1) 0];
+    params.p = [QGamma(index,1) 0];
     params.gamma = [QGamma(index,2) 0];
 
     timeseries = [];
@@ -133,6 +133,8 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+filename1 = [filename(1:end-4) '.png'];
 
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+exportgraphics(h,filename1,"BackgroundColor",'white');
 
