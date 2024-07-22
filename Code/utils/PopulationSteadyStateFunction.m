@@ -8,8 +8,8 @@
 
 %% Inputs:
 % CyclePeriod - Duration of Single Cycle in hours.
-% p_L - fraction of lysogens being passaged between cycles.
-% p_V - fraction of virions being passaged between cycles.
+% q_L - fraction of lysogens being passaged between cycles.
+% q_V - fraction of virions being passaged between cycles.
 % Gamma - array of Gamma values at which steady states are to be evaluated.
 % P - array of P values at which steady states are to be evaluated. 
 % numNodes - number of nodes being used for parallel computing. Do not
