@@ -41,7 +41,7 @@ end
 h = figure('Renderer','painters','Position',[760 200 1225*3/2 951/2]);
 t = tiledlayout(1,3,'Padding','loose','TileSpacing','loose');
 
-inset_position = [0.1150    0.335    0.18    0.4000; .425 .335 .18 .4; .71 .335 .18 .4];
+inset_position = [0.1150    0.335    0.18    0.4000; .425 .335 .18 .4; .713 .335 .18 .4];
 colorlabel_position = [2.9109 1e4 0; 2.9109 4e3 0; 2.9109 4e2 0];
 PlotTitles = {"Cycle period = 12hr","Cycle period = 16hr","Cycle period = 24hr"};
 for index = 1:3
@@ -67,23 +67,23 @@ for index = 1:3
 
     %% Add inset figure
     ax_inset{index} = axes('Position',inset_position(index,:));
-    imagesc(Gamma,Q,SteadyState_temp);    
+    imagesc(Q,Gamma,SteadyState_temp');    
     hold on;
     %plot(Gamma(i),Q(j),'*k','MarkerSize',5,'LineWidth',2);
-    contour(Gamma,Q,SteadyState_temp,'k');
-    xline(Gamma(i),'LineWidth',1.5,'Color','r');
-    xticks([1e-3 1e-2 1e-1 1e0]);
-    xticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
-    yticks(linspace(0,1,5));
+    contour(Q,Gamma,SteadyState_temp','k');
+    yline(Gamma(i),'LineWidth',1.5,'Color','r');
+    yticks([1e-3 1e-2 1e-1 1e0]);
+    yticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
+    xticks(linspace(0,1,5));
     c = colorbar;
     c.Label.String = "Viral genome density (mL$^{-1}$)";
     c.Label.Interpreter = 'latex';
     c.Label.Rotation = -90;
     c.Label.Position = colorlabel_position(index,:);
     
-    set(ax_inset{index},'XScale','log','YScale','linear','ColorScale','log','YDir','normal'); 
-    xlabel('$\gamma$: Inducation rate (hr$^{-1}$)');
-    ylabel( '$p$: Integration Probability');
+    set(ax_inset{index},'YScale','log','XScale','linear','ColorScale','log','YDir','normal'); 
+    ylabel('$\gamma$: Induction rate (hr$^{-1}$)');
+    xlabel( '$p$: Integration Probability');
     pbaspect(ax_inset{index},[1 1 1]);
     hold off;
 
@@ -110,6 +110,6 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+%exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
 
 

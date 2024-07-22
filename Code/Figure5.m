@@ -80,16 +80,16 @@ for index = 1:3
     
     %% Plot steady state densities
     tile = nexttile();
-    imagesc(Gamma,Q,SteadyState_temp);
+    imagesc(Q,Gamma,SteadyState_temp');
     hold on;
-    plot(Gamma(i),Q(j),'*k','MarkerSize',5,'LineWidth',2);
+    plot(Q(j),Gamma(i),'*k','MarkerSize',5,'LineWidth',2);
     
     
     
-    contour(Gamma,Q,SteadyState_temp,'k');
-    xticks([1e-3 1e-2 1e-1 1e0]);
-    xticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
-    yticks(linspace(0,1,5));
+    contour(Q,Gamma,SteadyState_temp','k');
+    yticks([1e-3 1e-2 1e-1 1e0]);
+    yticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
+    xticks(linspace(0,1,5));
     c = colorbar;
     c.Label.String = "Viral genome density (mL$^{-1}$)";
     c.Label.Interpreter = 'latex';
@@ -98,9 +98,9 @@ for index = 1:3
     c.Label.FontSize = 14;
     
     %yticklabels({'0','.5','1'});
-    set(gca,'XScale','log','YScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',12); 
-    xlabel('$\gamma$: Inducation rate (hr$^{-1}$)','FontSize',14,"FontWeight",'bold');
-    ylabel( '$p$: Integration Probability','FontSize',14,"FontWeight",'bold');
+    set(gca,'YScale','log','XScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',12); 
+    ylabel('$\gamma$: Induction rate (hr$^{-1}$)','FontSize',14,"FontWeight",'bold');
+    xlabel( '$p$: Integration Probability','FontSize',14,"FontWeight",'bold');
     c.Label.Position(1) = 4.3167;
     hold off;
 
@@ -120,18 +120,19 @@ for index = 1:3
 end
 
 
-%% Add vertical lines on the steady state plots
+%% Add horizontal lines on the steady state plots
 nexttile(1)
-xline(MaximaPoint{1}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
+yline(MaximaPoint{1}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
 nexttile(3);
-xline(MaximaPoint{2}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
+yline(MaximaPoint{2}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
 nexttile(5);
-xline(MaximaPoint{3}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
+yline(MaximaPoint{3}(1),'LineWidth',1.5,'Color','r','LineStyle','-');
+
 %% Add Annotations
 nexttile(1);
 %text(.07235,.91,'$(\gamma_{L_{max}}^{(12hr)},p_{L_{max}}^{(12hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(.07235,.91,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(MaximaPoint{1}(1),MaximaPoint{1}(2),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',40);
+text(.95,.17235,'$(p^*,\gamma^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(MaximaPoint{1}(2),MaximaPoint{1}(1),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',-40);
 nexttile(2);
 text(.25,.65,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.85,.65,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
@@ -139,8 +140,8 @@ text(.6,.85,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalA
 text(.6,.25,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 nexttile(3);
 %text(.0505,.82,'$(\gamma_{L_{max}}^{(16hr)},p_{L_{max}}^{(16hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(.0505,.82,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(MaximaPoint{2}(1),MaximaPoint{2}(2),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k');
+text(.89,.1905,'$(p^*,\gamma^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(MaximaPoint{2}(2),MaximaPoint{2}(1),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',-90);
 nexttile(4);
 text(.15,.5,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.75,.5,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
@@ -148,8 +149,9 @@ text(.5,.75,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalA
 text(.5,.15,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 nexttile(5);
 %text(.0505,.52,'$(\gamma_{L_{max}}^{(24hr)},p_{L_{max}}^{(24hr)})$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(.0505,.52,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(MaximaPoint{3}(1),MaximaPoint{3}(2),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k');
+%text(.52,.0505,'$(p^*,\gamma^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(.585,.1905,'$(p^*,\gamma^*)$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(MaximaPoint{3}(2),MaximaPoint{3}(1),'$\longrightarrow$','interpreter','latex','FontSize',12,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',-90);
 nexttile(6);
 text(.15,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.6,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
@@ -157,18 +159,18 @@ text(.3,.75,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalA
 text(.3,.15,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 
 %% Add plot labels
-nexttile(1);
-text(10^-3.6,1,'(A)','FontSize',14,'FontWeight','bold');
 nexttile(2);
-text(-.25,1,'(B)','FontSize',14,'FontWeight','bold');
-nexttile(3);
-text(10^-3.6,1,'(C)','FontSize',14,'FontWeight','bold');
+text(-2.45,1.02,'(A)','FontSize',14,'FontWeight','bold');
+nexttile(2);
+text(-.25,1.02,'(B)','FontSize',14,'FontWeight','bold');
 nexttile(4);
-text(-.25,1,'(D)','FontSize',14,'FontWeight','bold');
-nexttile(5);
-text(10^-3.6,1,'(E)','FontSize',14,'FontWeight','bold');
+text(-2.45,1.02,'(C)','FontSize',14,'FontWeight','bold');
+nexttile(4);
+text(-.25,1.02,'(D)','FontSize',14,'FontWeight','bold');
 nexttile(6);
-text(-.25,1,'(F)','FontSize',14,'FontWeight','bold');
+text(-2.45,1.02,'(E)','FontSize',14,'FontWeight','bold');
+nexttile(6);
+text(-.25,1.02,'(F)','FontSize',14,'FontWeight','bold');
    
 %% Add plot titles
 nexttile(1);
@@ -222,5 +224,5 @@ else
     version = str2num(version);
     filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
+%exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');
 

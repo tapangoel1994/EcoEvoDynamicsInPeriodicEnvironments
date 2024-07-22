@@ -66,23 +66,23 @@ for index = 1:2
 
     %% Add inset figure
     ax_inset{index} = axes('Position',inset_position(index,:));
-    imagesc(Gamma,Q,sum(SteadyState_temp(:,:,3:2:10),3));    
+    imagesc(Q,Gamma,sum(SteadyState_temp(:,:,3:2:10),3)');    
     hold on;
     %plot(Gamma(i),Q(j),'*k','MarkerSize',5,'LineWidth',2);
-    contour(Gamma,Q,sum(SteadyState_temp(:,:,3:2:10),3),'k');
-    xline(.0832,'LineWidth',1.5,'Color','r');
-    xticks([1e-3 1e-2 1e-1 1e0]);
-    xticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
-    yticks(linspace(0,1,5));
+    contour(Q,Gamma,sum(SteadyState_temp(:,:,3:2:10),3)','k');
+    yline(.0832,'LineWidth',1.5,'Color','r');
+    yticks([1e-3 1e-2 1e-1 1e0]);
+    yticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
+    xticks(linspace(0,1,5));
     c = colorbar;
     c.Label.String = "Viral genome density (mL$^{-1}$)";
     c.Label.Interpreter = 'latex';
     c.Label.Rotation = -90;
     c.Label.Position = colorlabel_position(index,:);
     
-    set(ax_inset{index},'XScale','log','YScale','linear','ColorScale','log','YDir','normal'); 
-    xlabel('$\gamma$: Inducation rate (hr$^{-1}$)');
-    ylabel( '$p$: Integration Probability');
+    set(ax_inset{index},'YScale','log','XScale','linear','ColorScale','log','YDir','normal'); 
+    ylabel('$\gamma$: Induction rate (hr$^{-1}$)');
+    xlabel( '$p$: Integration Probability');
     pbaspect(ax_inset{index},[1 1 1]);
     hold off;
 

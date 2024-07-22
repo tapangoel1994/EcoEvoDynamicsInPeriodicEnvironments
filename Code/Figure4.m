@@ -77,16 +77,16 @@ for index = 2:-1:1
     
     %% Plot steady state densities
     tile = nexttile;
-    imagesc(Gamma,Q,SteadyState_temp);
+    imagesc(Q,Gamma,SteadyState_temp');
     hold on;
-    plot(Gamma(i),Q(j),'*k','MarkerSize',5,'LineWidth',2);
+    plot(Q(j),Gamma(i),'*k','MarkerSize',5,'LineWidth',2);
     
     
     
-    contour(Gamma,Q,SteadyState_temp,'k');
-    xticks([1e-3 1e-2 1e-1 1e0]);
-    xticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
-    yticks(linspace(0,1,5));
+    contour(Q,Gamma,SteadyState_temp','k');
+    yticks([1e-3 1e-2 1e-1 1e0]);
+    yticklabels({'10$^{-3}$','10$^{-2}$','10$^{-1}$','1'});
+    xticks(linspace(0,1,5));
     c = colorbar;
     c.Label.String = "Viral genome density (mL$^{-1}$)";
     c.Label.Interpreter = 'latex';
@@ -95,9 +95,9 @@ for index = 2:-1:1
     c.Label.FontSize = 16;
     
 
-    set(gca,'XScale','log','YScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',14); 
-    xlabel('$\gamma$: Inducation rate (hr$^{-1}$)','FontSize',16,"FontWeight",'bold');
-    ylabel( '$p$: Integration Probability','FontSize',16,"FontWeight",'bold');
+    set(gca,'YScale','log','XScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',14); 
+    ylabel('$\gamma$: Induction rate (hr$^{-1}$)','FontSize',16,"FontWeight",'bold');
+    xlabel( '$p$: Integration Probability','FontSize',16,"FontWeight",'bold');
 
     c.Label.Position(1) = 4.7;
 
@@ -121,20 +121,20 @@ end
 
 %% Add vertical lines on the steady state plots
 nexttile(1)
-xline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
+yline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
 nexttile(3)
-xline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
+yline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
 %% Add Annotations
 nexttile(1);
 %text(0.6210,0.0508,'$(\gamma_{V_{max}},p_{V_{max}})$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(0.6210,0.0508,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(1,0,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',-15);
+text(0.2008,0.5510,'$(p^*,\gamma^*)$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(0,1,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',-40-180);
 nexttile(2);
 text(.75,.25,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.25,.75,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 nexttile(3);
-text(.0495,.5175,'$(\gamma^*,p^*)$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
-text(.0832,.52,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k');
+text(.60,.2295,'$(p^*,\gamma^*)$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','BackgroundColor','white');
+text(.52,.0832,'$\longrightarrow$','interpreter','latex','FontSize',14,'FontWeight','bold','HorizontalAlignment','right','Color','k','Rotation',-90);
 nexttile(4);
 text(.15,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 text(.6,.3,'+','FontSize',30,'Color',[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
@@ -142,14 +142,14 @@ text(.3,.75,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalA
 text(.3,.15,'-','FontSize',30,'Color',0*[1 1 1],'FontWeight','bold','HorizontalAlignment','center');
 
 %% Add plot labels
-nexttile(1);
-text(10^-3.6,1,'(A)','FontSize',16,'FontWeight','bold');
 nexttile(2);
-text(-.25,1,'(B)','FontSize',16,'FontWeight','bold');
-nexttile(3);
-text(10^-3.6,1,'(C)','FontSize',16,'FontWeight','bold');
+text(-2.2,1.05,'(A)','FontSize',16,'FontWeight','bold');
+nexttile(2);
+text(-.25,1.05,'(B)','FontSize',16,'FontWeight','bold');
 nexttile(4);
-text(-.25,1,'(D)','FontSize',16,'FontWeight','bold');
+text(-2.2,1.05,'(C)','FontSize',16,'FontWeight','bold');
+nexttile(4);
+text(-.25,1.05,'(D)','FontSize',16,'FontWeight','bold');
    
 %% Add plot titles
 nexttile(1);
