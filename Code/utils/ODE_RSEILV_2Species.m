@@ -1,14 +1,15 @@
 %% Code implements single time step for a RSEILV model with no MOI dependence corresponding to eq 7 in the main manuscript
+%% The variables params.* correspond to life history traits. Their meaning and values can be found in Tables S1 and S2 in the manuscript or in the file lib\fixedparameters.m
 
-%%Author: Tapan Goel
-%%Date of creation: 9/14/2023
+%% Author: Tapan Goel
+%% Date of creation: 9/14/2023
 
-%%Input:
+%% Input:
 % t = timepoint
 % y = (R(t),S(t),Ea(t),Eb(t),Ia(t),Ib(t),La(t),Lb(t),Va(t),Vb(t)) : system CONCENTRATION state at timepoint t.
 % params = structure of parameter values
 
-%%Output:
+%% Output:
 % dydt = d(R(t),S(t),Ea(t),Eb(t),Ia(t),Ib(t),La(t),Lb(t),Va(t),Vb(t))/dt : the derivative of the system state at timepoint t
 
 function dydt = ODE_RSEILV_2species(t,y,params)
@@ -21,7 +22,7 @@ I = y(5:6);%*heaviside(y(4)-1/flask_volume);
 L = y(7:8);%*heaviside(y(5)-1/flask_volume);
 V = y(9:10);%*heaviside(y(6)-1/flask_volume);
 
-p = reshape(params.p,[1,2]); %integration probabilities
+p = reshape(params.p,[1,2]); %integration probabilities for virus type a and b.
 
 psi = params.mu_max*R/(params.R_in+R); %monod resource consumption
 

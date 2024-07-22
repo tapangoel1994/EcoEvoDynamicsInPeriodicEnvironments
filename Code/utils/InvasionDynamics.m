@@ -1,16 +1,19 @@
-%%Code takes one-host two-virus system and sweeps over p for a fixed gamma or gamma for a fixed p keeping
-%other parameters fixed and does invasion analysis. Uses an RSEILV model with no MOI dependence. 
-% Obtain appropriate steady state densities for resident. Add mutant at
-% threshold and look at first Invasion_Cycles = 10 cycles to see if the viral frequency has
-% increased for every resident-mutant pair.
+%% Code takes one-host two-virus system and sweeps over the invasion variable given by the user while keeping
+% other parameters fixed and does invasion analysis. Uses an RSEILV model with no MOI dependence. 
+% For a given resident(denoted by a)-mutant(denoted by b) pair, we first obtain the steady state densities for resident. Then, we add the mutant at
+% threshold density and look at the first Invasion_Cycles = 10 cycles to see if the mutant frequency has
+% increased or decreased to declare if the invasion is successful or not. If the answer is not conclusive after 10
+% cycles, we run another 10 cycles.
+% We repeat this procedure for every resident-mutant pair in the invasion
+% variable vector.
 
 %%Date Created: 07/16/2024
 %%Author: Tapan Goel
 
 %% Inputs:
 % CyclePeriod - Duration of Single Cycle in hours.
-% p_L - fraction of lysogens being passaged between cycles.
-% p_V - fraction of virions being passaged between cycles.
+% q_L - fraction of lysogens being passaged between cycles.
+% q_V - fraction of virions being passaged between cycles.
 % InvasionVariable - a Nx2 array where each row is a (p,gamma) pair that
 %                    defines a species.
 % numNodes - number of nodes being used for parallel computing. Do not
@@ -22,12 +25,37 @@
 % values to the parameters internally.
 
 %% Output:
-% Script generates a .mat file named:
+% InvasionDensity - 3D array of size
+%                   length(InvasionVariable)xlength(InvasionVariable)x10.
+%                   Y = InvasionDensity(i,j:) contains the density vector of the one host two virus system for resident with traits InvasionVariable(i,:) 
+%                   and mutant with traits InvasionVariable(j,:), at the beginning of the cycle where invasion success/failure is determined.
+%                   The vector itself is Y =
+%                   [R,S,E_a,E_b,I_a,I_b,L_a,L_b,V_a,V_b].
+% InvasionMatrix - 2D matrix of size length(InvasionVariable)xlength(InvasionVariable).
+%                  InvasionMatrix(i,j) contains a value that determines
+%                  whether the invasion by mutant with traits
+%                  InvasionVariable(j,:) was successful in a system with
+%                  resident with traits InvasionVariable(i,:).
+%                  InvasionMatrix(i,j) = -2, if the resident is not present
+%                  in the system at steady state to begin with (so the
+%                  notion of invasion is not meaningful).
+%                  InvasionMatrix(i,j) = -1, if the invasion fails.
+%                  InvasionMatrix(i,j) = 0, if the resident and mutant have
+%                  the same trait values (i.e., i = j).
+%                  InvasionMatrix(i,j) = 1, if the invasion is successful
+% CyclesToInvasion - length(InvasionVariable)xlength(InvasionVariable).
+%                  CyclesToInvasion(i,j) is the number of cycles it takes 
+%                  after the introduction of the mutant with traits
+%                  InvasionVariable(j,:), in a system with
+%                  resident with traits InvasionVariable(i,:), to determine
+%                  whether the invasion was a success or a failure.
+%
+% This function also generates a .mat file named:
 % "Invasion_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,q_L=<q_L>,q_V=<q_V>.mat"
 % that contains all the variables in the workspace from the simulation.
-% Note that the output file has variables for the steady state values of
-% each cell type for all strategies evaluated but does not have the
-% dynamics for the strategies.
+
+
+%% Note: This function uses the parfor loop and therefore needs the MATLAB Parallel Computing Toolbox to run
 
 function [InvasionDensity, InvasionMatrix, CyclesToInvasion] = InvasionDynamics(CyclePeriod,q_L,q_V,InvasionVariable,numNodes,SaveFlag, varargin)
 
@@ -81,7 +109,6 @@ q_I = 0;
 q_L = q_L;
 q_V = q_V;
 q_Total = q_E+q_I+q_L+q_V;
-
 TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 %% Numerical method related parameters
@@ -105,12 +132,12 @@ tic
 
 
 parfor resident = 1:length(InvasionVariable)
-
+    
+        %% Resident dynamics to steady state
         Params = params;
         Params.p = [InvasionVariable(resident,1) 0];
         Params.gamma = [InvasionVariable(resident,2) 0];
-        %% Resident dynamics to steady state
-        
+
         %First cycle
         x0 = [R0 S0 zeros(1,6) Va_0 0];
         [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);        
@@ -132,29 +159,32 @@ parfor resident = 1:length(InvasionVariable)
             x0 = [R0 S0 zeros(1,8)] + y(end,:)*TransferMatrix;
         end
         
-        % Add mutant and do invasions
-        InvasionIC = x0 + [0 0 0 q_E*Vb_0 0 q_I*Vb_0 0 q_L*Vb_0 0 q_V*Vb_0]./q_Total;
-
-        %InvasionIC = x0 + [zeros(1,7) p_L*Vb_0/p_Total 0 p_V*Vb_0/p_Total];
-
-        InvasionforResidentDensity = zeros(length(InvasionVariable),10);
-        InvasionMatrixforResident = zeros(length(InvasionVariable),1);
-        CyclesToInvasionforResident = zeros(length(InvasionVariable),1);
+        %% Add mutant and do invasions
+        InvasionIC = x0 + [0 0 0 q_E*Vb_0 0 q_I*Vb_0 0 q_L*Vb_0 0 q_V*Vb_0]./q_Total; %This condition adds mutant at a total density Vb_0 spread into the E,I,L,V classes according to their filtration ratios
+        
+        %define variables to circumvent scope rules for parfor
+        InvasionforResidentDensity = zeros(length(InvasionVariable),10); %temporarily stores resident and mutant final state for a given resident
+        InvasionMatrixforResident = zeros(length(InvasionVariable),1); %temporarily stores invasion success/failure status for every mutant for a fixed resident
+        CyclesToInvasionforResident = zeros(length(InvasionVariable),1); %temporarily stores the number of cycles to invasion for every mutant given a fixed resident
+    
+        %loop over all possible mutants
 
         for mutant = 1:length(InvasionVariable)
-            if(mutant ~= resident & sum(InvasionIC(3:2:end)) > 100*criticaldensitythreshold)
+            if(mutant ~= resident & sum(InvasionIC(3:2:end)) > 100*criticaldensitythreshold) 
+                %invasion makes sense only if the mutant is different from the resident and if the resident is already present in the system at a high enough density
 
                 Params.p = [InvasionVariable(resident,1) InvasionVariable(mutant,1)];
                 Params.gamma = [InvasionVariable(resident,2) InvasionVariable(mutant,2)];
                 %First cycle
                 x0 = InvasionIC;
-                InvasionTerminationFlag = 0;
+                InvasionTerminationFlag = 0; % set to 1 if there is clear success/failure determination about the invasion
                 InvasionSeries = zeros(InvasionCycles+1,10);
                 InvasionSeries(1,:) = x0;
                 InvasionIterations = 0;
-                while ~InvasionTerminationFlag
+
+                while ~InvasionTerminationFlag %keep iterating till there is a clear success/failure determination about the invasion
                     
-                    for ii = 1:InvasionCycles           
+                    for ii = 1:InvasionCycles %run InvasionCycles = 10 growth cycles with the resident and the mutant in the system
                         [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);
                         x0 = [R0 S0 zeros(1,8)] + y(end,:)*TransferMatrix;
                         InvasionSeries(ii+1,:) = x0;
@@ -188,18 +218,18 @@ parfor resident = 1:length(InvasionVariable)
     delete(poolobj);
 
     %% If a diagonal index falls inside the nonfeasible zone, add it to the non-feasible zone
-    for diagindex = 2:length(InvasionVariable)-1
-        if InvasionMatrix(diagindex,diagindex-1) == -2 & InvasionMatrix(diagindex,diagindex+1) == -2
-            InvasionMatrix(diagindex,diagindex) = -2;
+        for diagindex = 2:length(InvasionVariable)-1
+            if InvasionMatrix(diagindex,diagindex-1) == -2 & InvasionMatrix(diagindex,diagindex+1) == -2
+                InvasionMatrix(diagindex,diagindex) = -2;
+            end
         end
-    end
-
-    if InvasionMatrix(1,2) == -2
-        InvasionMatrix(1,1) = -2;
-    end
-    if InvasionMatrix(end,end-1) == -2
-        InvasionMatrix(end,end) = -2;
-    end
+    
+        if InvasionMatrix(1,2) == -2
+            InvasionMatrix(1,1) = -2;
+        end
+        if InvasionMatrix(end,end-1) == -2
+            InvasionMatrix(end,end) = -2;
+        end
 %% Save workspace
 if SaveFlag == 1
     if ~isfolder('..\Data\')
