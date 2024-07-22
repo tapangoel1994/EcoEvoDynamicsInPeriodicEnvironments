@@ -213,10 +213,10 @@ text(1.06,.9,'Mutant invasion fails','FontSize',14,'FontWeight','bold','Rotation
 
 
 %% Save Figure
-filename = dir('..\\Figures\\ChangingCyclePeriod*');
+filename = dir('..\\Figures\\Fgure5*');
 
 if isempty(filename)
-    filename = '..\\Figures\\ChangingCyclePeriod_v1.eps';
+    filename = '..\\Figures\\Figuree5_v1.eps';
 else
     filename = [filename(end).folder '\' filename(end).name];
     version = extractBetween(filename,"_v",".");

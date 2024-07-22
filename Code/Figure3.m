@@ -304,3 +304,18 @@ hold off;
 
 nexttile(6);
 ylabel('Total viral genome density (mL$^{-1})$','FontSize',18,'FontWeight','bold','FontName','Times');
+
+
+%% Save Figure
+filename = dir('..\Figure\Figure3*');
+
+if isempty(filename)
+    filename = 'Figure3_v1.svg';
+else
+    filename = ['..\Figures\' filename(end).name];
+    version = extractBetween(filename,"_v",".");
+    version = version{1};
+    version = str2num(version);
+    filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.svg'];
+end
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');

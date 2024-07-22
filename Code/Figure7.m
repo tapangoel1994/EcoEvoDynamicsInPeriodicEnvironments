@@ -123,9 +123,9 @@ text(-16,10^10,'(C)','FontSize',16,'FontWeight','bold');
 nexttile(4);
 text(-16,10^10,'(D)','FontSize',16,'FontWeight','bold');
 %% Save Figure
-filename = dir('..\Figures\RandomSelections*');
+filename = dir('..\Figures\Figure7*');
 if isempty(filename)
-    filename = '..\Figures\RandomSelections_v1.eps';
+    filename = '..\Figures\Figure7_v1.eps';
 else
     filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");

@@ -180,10 +180,10 @@ text(1.08,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotatio
 
 
 %% Save Figure
-filename = dir('..\Figures\SteadyStatePlusInvasion*');
+filename = dir('..\Figures\Figure4*');
 
 if isempty(filename)
-    filename = '..\Figures\SteadyStatePlusInvasion_v1.eps';
+    filename = '..\Figures\Figure4_v1.eps';
 else
     filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");

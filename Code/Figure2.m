@@ -1,5 +1,5 @@
-%%Code to simulate and plot single cycle for 3 different viral strategies over 24
-%%hours
+%% Code to simulate and plot single cycle for 3 different viral strategies over 24
+%% hours. This script generates Figure 2 in the manuscript.
 
 %% Date created: 2/23/2024
 %% Modified: 6/25/2024
@@ -9,6 +9,7 @@
 close all; 
 clear all;
 
+%% load fixed parameters and color scheme
 addpath('utils\');
 addpath('lib\');
     colorpalette;
@@ -21,7 +22,7 @@ params.t_vals = transpose(0:params.dt:params.T); % time
 
 
 %% initial conditions
-R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
+R0 = 1e2; %initial resource amount in ug/mL
 S0 = 1e7; %Initial concentration of susceptibles in flask (per mL)
 V01= 1e4; %initial concentration of virus in flask (per mL)
 V02 = 0;
@@ -90,15 +91,15 @@ text(-5.5,10^10,'(C)','FontSize',16,'FontWeight','bold');
 nexttile(4);
 text(-5.5,10^8,'(D)','FontSize',16,'FontWeight','bold');
 %% Save Figure
-filename = dir('..\Figure\SingleCycle*');
+filename = dir('..\Figure\Figure2*');
 
 if isempty(filename)
-    filename = 'SingleCycle_v1.eps';
+    filename = 'Figure2_v1.eps';
 else
-    filename = filename(end).name;
+    filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
-    filename = [extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
+    filename = [extractBefore(filename,['v' num2str(version)]) 'v' num2str(version+1) '.eps'];
 end
-saveas(h,filename,'epsc');
+exportgraphics(h,filename,"BackgroundColor",'none','ContentType','vector');

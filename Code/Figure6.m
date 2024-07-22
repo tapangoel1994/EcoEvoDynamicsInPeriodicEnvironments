@@ -178,10 +178,10 @@ text(1.06,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotatio
 
 
 %% Save Figure
-filename = dir('..\\Figures\\ChangingFiltrationRatio*');
+filename = dir('..\\Figures\\Figure6*');
 
 if isempty(filename)
-    filename = '..\Figures\ChangingFiltrationRatio_v1.eps';
+    filename = '..\Figures\Figure6_v1.eps';
 else
     filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");

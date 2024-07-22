@@ -103,10 +103,10 @@ text(1.15,3e10,'(B)','FontSize',20,'FontWeight','bold');
 
 
 %% Save Figure
-filename = dir('..\Figures\SteadyStatePlusInvasion_SI*');
+filename = dir('..\Figures\FigureS5*');
 
 if isempty(filename)
-    filename = '..\Figures\SteadyStatePlusInvasion_SI_v1.eps';
+    filename = '..\Figures\FigureS5_v1.eps';
 else
     filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");

@@ -254,10 +254,10 @@ for conditions = 1:3
 
    
     %% Save Figure
-    filename = dir(['..\Figures\CycleToCycle_SI' num2str(conditions) '*']);
+    filename = dir(['..\Figures\FigureS' num2str(conditions) '*']);
     
     if isempty(filename)
-        filename = ['..\Figures\CycleToCycle_SI' num2str(conditions) '_v1.eps'];
+        filename = ['..\Figures\FigureS' num2str(conditions) '_v1.eps'];
     else
         filename = ['..\Figures\' filename(end).name];
         version = extractBetween(filename,"_v",".");

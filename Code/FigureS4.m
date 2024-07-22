@@ -213,10 +213,10 @@ Iter = Iter+iter;
    end
    
    %% Save Figure
-filename = dir('..\Figures\CycleToCycleInvasion*');
+filename = dir('..\Figures\FigureS4*');
 
 if isempty(filename)
-    filename = '..\Figures\CycleToCycleInvasion_v1.eps';
+    filename = '..\Figures\FigureS4_v1.eps';
 else
     filename = filename(end).name;
     version = extractBetween(filename,"_v",".");

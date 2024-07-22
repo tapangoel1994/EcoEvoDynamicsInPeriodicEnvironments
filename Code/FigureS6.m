@@ -99,10 +99,10 @@ text(1.13,1e8,'(B)','FontSize',20,'FontWeight','bold');
 text(2.42,1e8,'(C)','FontSize',20,'FontWeight','bold');
 
 %% Save Figure
-filename = dir('..\\Figures\\ChangingCyclePeriod_SI*');
+filename = dir('..\\Figures\\FigureS6*');
 
 if isempty(filename)
-    filename = '..\\Figures\\ChangingCyclePeriod_SI_v1.eps';
+    filename = '..\\Figures\\FigureS6_v1.eps';
 else
     filename = [filename(end).folder '\' filename(end).name];
     version = extractBetween(filename,"_v",".");

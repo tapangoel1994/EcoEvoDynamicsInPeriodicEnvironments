@@ -101,10 +101,10 @@ text(-.21,5e5,'(A)','FontSize',20,'FontWeight','bold');
 text(1.15,5e5,'(B)','FontSize',20,'FontWeight','bold');
 
 %% Save Figure
-filename = dir('..\\Figures\\ChangingFiltrationRatio_SI*');
+filename = dir('..\\Figures\\FigureeS7*');
 
 if isempty(filename)
-    filename = '..\Figures\ChangingFiltrationRatio_SI_v1.eps';
+    filename = '..\Figures\FigureS7_v1.eps';
 else
     filename = ['..\Figures\' filename(end).name];
     version = extractBetween(filename,"_v",".");
