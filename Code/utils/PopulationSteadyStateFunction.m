@@ -1,7 +1,7 @@
-%%Code takes one-host one-virus system and sweeps over (q,gamma) keeping
+%%Code takes one-host one-virus system and sweeps over (p,gamma) keeping
 %other parameters fixed. Uses an RSEILV model with no MOI dependence. 
 % Obtain appropriate steady state densities for
-% every (q,gamma) pair and generate a heatmap. 
+% every (p,gamma) pair and generate a heatmap. 
 
 %%Date Created: 1/23/2024
 %%Author: Tapan Goel
@@ -11,7 +11,7 @@
 % p_L - fraction of lysogens being passaged between cycles.
 % p_V - fraction of virions being passaged between cycles.
 % Gamma - array of Gamma values at which steady states are to be evaluated.
-% Q - array of Q values at which steady states are to be evaluated. 
+% P - array of P values at which steady states are to be evaluated. 
 % numNodes - number of nodes being used for parallel computing. Do not
 % exceed 32 (depending on cluster being used).
 % SaveFlag - set to 1 if you want to save the output workspace to a
@@ -28,7 +28,7 @@
 % each cell type for all strategies evaluated but does not have the
 % dynamics for the strategies.
 
-function [SteadyStateDensity, SSCycles] = PopulationSteadyStateFunction(CyclePeriod,p_L,p_V,Gamma,Q,numNodes,SaveFlag,varargin)
+function [SteadyStateDensity, SSCycles] = PopulationSteadyStateFunction(CyclePeriod,q_L,q_V,Gamma,P,numNodes,SaveFlag,varargin)
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
 if nargin == 7
@@ -52,7 +52,7 @@ if nargin == 7
     params.lambda = 2; %per hour
     params.eta = 1; %per hour
     params.bet = 50;
-    params.q = [0 0];
+    params.p = [0 0];
     params.gamma = [0 0];
     
     
@@ -73,13 +73,13 @@ params.t_vals = transpose(0:params.dt:params.T); % time
 
 
 %% filter parameters
-p_R = 1;
-p_S = 0;
-p_E = 0;
-p_I = 0;
-p_L = p_L;
-p_V = p_V;
-TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+q_R = 1;
+q_S = 0;
+q_E = 0;
+q_I = 0;
+q_L = q_L;
+q_V = q_V;
+TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
@@ -90,10 +90,10 @@ criticaldensitythreshold = 1e-3; % concentration difference below which two conc
 params.flask_volume = 1/criticaldensitythreshold; %volume in mL      
 
 
-SteadyStateDensityTemp = zeros(length(Q)*length(Gamma),10);
-SteadyStateDensity = zeros(length(Q),length(Gamma),10);
-SSCyclesTemp = zeros(length(Q)*length(Gamma),3); %% Variable to store q,gamma,#cyclestoSteadyState
-SSCycles = zeros(length(Q),length(Gamma));
+SteadyStateDensityTemp = zeros(length(P)*length(Gamma),10);
+SteadyStateDensity = zeros(length(P),length(Gamma),10);
+SSCyclesTemp = zeros(length(P)*length(Gamma),3); %% Variable to store p,gamma,#cyclestoSteadyState
+SSCycles = zeros(length(P),length(Gamma));
 
 %% initial conditions
 R0 = 1e2; %initial resource amount in ug/mL ( 500 mL flask)
@@ -105,10 +105,10 @@ Vb_0 = 0;
 poolobj = parpool(numNodes);
 
 tic
-parfor ii = 1:length(Q)*length(Gamma)
+parfor ii = 1:length(P)*length(Gamma)
         Params = params;
-        [j,i]=ind2sub([length(Gamma),length(Q)],ii);
-        Params.q = [Q(i) 0];
+        [j,i]=ind2sub([length(Gamma),length(P)],ii);
+        Params.p = [P(i) 0];
         Params.gamma = [Gamma(j) 0];
         
         %% First cycle
@@ -145,7 +145,7 @@ parfor ii = 1:length(Q)*length(Gamma)
         %PlotTimeSeries_2species(t_vals,y);
         %drawnow;
         end
-        SSCyclesTemp(ii,:) = [Q(i) Gamma(j) iter];
+        SSCyclesTemp(ii,:) = [P(i) Gamma(j) iter];
         SteadyStateDensityTemp(ii,:) = x0;
         
 
@@ -154,9 +154,9 @@ parfor ii = 1:length(Q)*length(Gamma)
     delete(poolobj);
 
 %% Restructure results into 2D array
-for ii = 1:length(Q)*length(Gamma)
+for ii = 1:length(P)*length(Gamma)
 
-        [j,i]=ind2sub([length(Gamma),length(Q)],ii);
+        [j,i]=ind2sub([length(Gamma),length(P)],ii);
         SteadyStateDensity(i,j,:) = SteadyStateDensityTemp(ii,:);
         SSCycles(i,j) = SSCyclesTemp(ii,3);
 end
@@ -166,7 +166,7 @@ if SaveFlag == 1
      if ~isfolder('..\Data\')
         mkdir('..\Data\');
     end
-    filename = sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,p_L,p_V);
+    filename = sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_L,q_V);
     save(filename);
 end
 

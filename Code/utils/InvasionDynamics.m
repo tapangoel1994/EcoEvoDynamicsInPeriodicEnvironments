@@ -1,4 +1,4 @@
-%%Code takes one-host two-virus system and sweeps over q for a fixed gamma or gamma for a fixed q keeping
+%%Code takes one-host two-virus system and sweeps over p for a fixed gamma or gamma for a fixed p keeping
 %other parameters fixed and does invasion analysis. Uses an RSEILV model with no MOI dependence. 
 % Obtain appropriate steady state densities for resident. Add mutant at
 % threshold and look at first Invasion_Cycles = 10 cycles to see if the viral frequency has
@@ -11,7 +11,7 @@
 % CyclePeriod - Duration of Single Cycle in hours.
 % p_L - fraction of lysogens being passaged between cycles.
 % p_V - fraction of virions being passaged between cycles.
-% InvasionVariable - a Nx2 array where each row is a (q,gamma) pair that
+% InvasionVariable - a Nx2 array where each row is a (p,gamma) pair that
 %                    defines a species.
 % numNodes - number of nodes being used for parallel computing. Do not
 %            exceed 32 (depending on cluster being used).
@@ -29,7 +29,7 @@
 % each cell type for all strategies evaluated but does not have the
 % dynamics for the strategies.
 
-function [InvasionDensity, InvasionMatrix, CyclesToInvasion] = InvasionDynamics(CyclePeriod,p_L,p_V,InvasionVariable,numNodes,SaveFlag, varargin)
+function [InvasionDensity, InvasionMatrix, CyclesToInvasion] = InvasionDynamics(CyclePeriod,q_L,q_V,InvasionVariable,numNodes,SaveFlag, varargin)
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
 if nargin == 6
@@ -54,7 +54,7 @@ if nargin == 6
     params.lambda = 2; %per hour
     params.eta = 1; %per hour
     params.bet = 50;
-    params.q = [0 0];
+    params.p = [0 0];
     params.gamma = [0 0];
     
     %% simulation parameters:
@@ -74,15 +74,15 @@ params.T = CyclePeriod; % hours
 params.t_vals = transpose(0:params.dt:params.T); % time
 
 %% filter parameters
-p_R = 1;
-p_S = 0;
-p_E = 0;
-p_I = 0;
-p_L = p_L;
-p_V = p_V;
-p_Total = p_E+p_I+p_L+p_V;
+q_R = 1;
+q_S = 0;
+q_E = 0;
+q_I = 0;
+q_L = q_L;
+q_V = q_V;
+q_Total = q_E+q_I+q_L+q_V;
 
-TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L p_L p_V p_V]);
+TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
@@ -107,7 +107,7 @@ tic
 parfor resident = 1:length(InvasionVariable)
 
         Params = params;
-        Params.q = [InvasionVariable(resident,1) 0];
+        Params.p = [InvasionVariable(resident,1) 0];
         Params.gamma = [InvasionVariable(resident,2) 0];
         %% Resident dynamics to steady state
         
@@ -133,7 +133,7 @@ parfor resident = 1:length(InvasionVariable)
         end
         
         % Add mutant and do invasions
-        InvasionIC = x0 + [0 0 0 p_E*Vb_0 0 p_I*Vb_0 0 p_L*Vb_0 0 p_V*Vb_0]./p_Total;
+        InvasionIC = x0 + [0 0 0 q_E*Vb_0 0 q_I*Vb_0 0 q_L*Vb_0 0 q_V*Vb_0]./q_Total;
 
         %InvasionIC = x0 + [zeros(1,7) p_L*Vb_0/p_Total 0 p_V*Vb_0/p_Total];
 
@@ -144,7 +144,7 @@ parfor resident = 1:length(InvasionVariable)
         for mutant = 1:length(InvasionVariable)
             if(mutant ~= resident & sum(InvasionIC(3:2:end)) > 100*criticaldensitythreshold)
 
-                Params.q = [InvasionVariable(resident,1) InvasionVariable(mutant,1)];
+                Params.p = [InvasionVariable(resident,1) InvasionVariable(mutant,1)];
                 Params.gamma = [InvasionVariable(resident,2) InvasionVariable(mutant,2)];
                 %First cycle
                 x0 = InvasionIC;
@@ -205,7 +205,7 @@ if SaveFlag == 1
     if ~isfolder('..\Data\')
         mkdir('..\Data\');
     end
-    filename = sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,p_L,p_V);
+    filename = sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_L,q_V);
     save(filename);
 end
 
