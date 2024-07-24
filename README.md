@@ -20,7 +20,7 @@ I suggest reviewing the code files in the following order:
    4. Read through the code in Code\utils\PopulationSteadyStateFunction.m
    5. Read through the code in Code\utils\InvasionDynamics.m
 
-Now, you should be able to generate all the figures in the paper (except figure 1 and the diagrams in figure 3) by simply running the corresponding Code\Figure_FigureNumber.m file.
+Now, you should be able to generate all the figures in the paper (except figure 1 and the diagrams in figure 3) by simply running the corresponding Code\Figure_FigureNumber.m file. Make sure you are in the ./Code directory while running those scripts.
 
 ## Folder content description
 
