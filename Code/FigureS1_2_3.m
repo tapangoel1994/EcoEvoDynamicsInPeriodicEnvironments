@@ -6,8 +6,8 @@
 close all; 
 clear all;
 
-addpath('utils\');
-addpath('lib\');
+addpath('utils/');
+addpath('lib/');
     colorpalette;
     fixedparameters;
 
@@ -254,12 +254,12 @@ for conditions = 1:3 %% iterate over different filtration conditions
 
    
     %% Save Figure
-    filename = dir(['..\Figures\FigureS' num2str(conditions) '*']);
+    filename = dir(['../Figures/FigureS' num2str(conditions) '*']);
     
     if isempty(filename)
-        filename = ['..\Figures\FigureS' num2str(conditions) '_v1.eps'];
+        filename = ['../Figures/FigureS' num2str(conditions) '_v1.eps'];
     else
-        filename = ['..\Figures\' filename(end).name];
+        filename = ['../Figures/' filename(end).name];
         version = extractBetween(filename,"_v",".");
         version = version{1};
         version = str2num(version);
