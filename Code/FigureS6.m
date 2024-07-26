@@ -21,7 +21,7 @@ fixedparameters;
 CyclePeriodList = [12,16,24];
 Gamma = logspace(-3,0,51);
 P = linspace(0,1,51);
-NumNodes = 8;
+NumNodes = 12;
 q_LV = [.2 0;.2 0;.2 0];
 S0 = 1e7;
 V0a = 1e4;
