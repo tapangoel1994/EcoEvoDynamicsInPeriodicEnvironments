@@ -8,8 +8,9 @@
 %%parallelization
 clear all;
 close all;
-addpath('utils\');
-addpath('lib\');
+addpath('utils/');
+addpath('lib/');
+addpath('../Data/');
 colorpalette;
 fixedparameters;
 
@@ -28,10 +29,10 @@ S0 = 1e7;
 Va_0 = 1e4;
 Vb_0 = 10*criticaldensitythreshold;
 
-%% Load steady state density matrices (either from a datafile if it already exists or by running the utils\PopulationSteadyStateFunction if the data doesnt exist
+%% Load steady state density matrices (either from a datafile if it already exists or by running the utils/PopulationSteadyStateFunction if the data doesnt exist
 for index = 1:2
-    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2))) 
-        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)));
+    if isfile(sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2))) 
+        load(sprintf("SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
@@ -40,7 +41,7 @@ for index = 1:2
 end
 
 
-%% Load invasion matrices (either from datafile or by running utils\InvasionDynamics.m
+%% Load invasion matrices (either from datafile or by running utils/InvasionDynamics.m
 for index = 1:2
     
     SteadyState_temp = SteadyState{index};
@@ -50,8 +51,8 @@ for index = 1:2
     
     InvasionVariable = [P' .0832*ones(size(P'))];
     
-    if isfile(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)))
-        load(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)));
+    if isfile(sprintf("../Data/Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)))
+        load(sprintf("Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_LV(index,1),q_LV(index,2)));
         Invasion{index} = InvasionDensity;
         CyclesInvasion{index} = CyclesToInvasion;
         InvasionSuccessMatrix{index} = InvasionMatrix;
@@ -100,7 +101,7 @@ for index = 2:-1:1
 
     set(gca,'YScale','log','XScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',14); 
     ylabel('$\gamma$: Induction rate (hr$^{-1}$)','FontSize',16,"FontWeight",'bold');
-    xlabel( '$p$: Integration Probability','FontSize',16,"FontWeight",'bold');
+    xlabel( '$p$: Integration probability','FontSize',16,"FontWeight",'bold');
 
     c.Label.Position(1) = 4.7;
 
@@ -122,7 +123,7 @@ for index = 2:-1:1
 end
 
 
-%% Add vertical lines on the steady state plots
+%% Add horizontal lines on the steady state plots
 nexttile(1)
 yline(.0832,'LineWidth',1.5,'Color','r','LineStyle','-');
 nexttile(3)
@@ -155,10 +156,10 @@ nexttile(4);
 text(-.25,1.05,'(D)','FontSize',16,'FontWeight','bold');
    
 %% Add plot titles
-nexttile(1);
-title('Filtrate: virions only','FontSize',20,'FontWeight','bold','Position',[4.5 1.05]);
-nexttile(3);
-title('Filtrate: lysogens only','FontSize',20,'FontWeight','bold','Position',[4.5 1.05]);
+nexttile(2);
+title('Filtrate: virions only','FontSize',20,'FontWeight','bold','Position',[-.3 1.1]);
+nexttile(4);
+title('Filtrate: lysogens only','FontSize',20,'FontWeight','bold','Position',[-.3 1.1]);
 
 %% Add labels for the invasion plots
 
@@ -183,12 +184,12 @@ text(1.08,.92,'Mutant invasion fails','FontSize',16,'FontWeight','bold','Rotatio
 
 
 %% Save Figure
-filename = dir('..\Figures\Figure4*');
+filename = dir('../Figures/Figure4*');
 
 if isempty(filename)
-    filename = '..\Figures\Figure4_v1.eps';
+    filename = '../Figures/Figure4_v1.eps';
 else
-    filename = ['..\Figures\' filename(end).name];
+    filename = [filename(end).folder '/' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
