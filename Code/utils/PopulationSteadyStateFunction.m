@@ -31,7 +31,7 @@
 % P(i), Gamma(j).
 
 % This function also generates a .mat file named:
-% "..\Data\SteadyState_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,q_L=<q_L>,q_V=<q_V>.mat"
+% "../Data/SteadyState_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,q_L=<q_L>,q_V=<q_V>.mat"
 % that contains all the variables in the workspace from the simulation.
 % Note that the output file has variables for the steady state values of
 % each cell type for all strategies evaluated but does not have the
@@ -171,10 +171,10 @@ end
 
 %% Save workspace
 if SaveFlag == 1
-     if ~isfolder('..\Data\')
-        mkdir('..\Data\');
+     if ~isfolder('../Data/')
+        mkdir('../Data/');
     end
-    filename = sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_L,q_V);
+    filename = sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_L,q_V);
     save(filename);
 end
 

@@ -51,7 +51,7 @@
 %                  whether the invasion was a success or a failure.
 %
 % This function also generates a .mat file named:
-% "Invasion_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,q_L=<q_L>,q_V=<q_V>.mat"
+% "../Data/Invasion_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,q_L=<q_L>,q_V=<q_V>.mat"
 % that contains all the variables in the workspace from the simulation.
 
 
@@ -232,10 +232,10 @@ parfor resident = 1:length(InvasionVariable)
         end
 %% Save workspace
 if SaveFlag == 1
-    if ~isfolder('..\Data\')
-        mkdir('..\Data\');
+    if ~isfolder('../Data/')
+        mkdir('../Data/');
     end
-    filename = sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_L,q_V);
+    filename = sprintf("../Data/Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_L,q_V);
     save(filename);
 end
 
