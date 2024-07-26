@@ -11,8 +11,9 @@
 close all; 
 clear all;
 
-addpath('utils\');
-addpath('lib\');
+addpath('utils/');
+addpath('lib/');
+addpath('../Data/');
 colorpalette;
 fixedparameters;
 
@@ -20,15 +21,15 @@ fixedparameters;
 CyclePeriodList = [12,16,24];
 Gamma = logspace(-3,0,51);
 P = linspace(0,1,51);
-NumNodes = 12;
+NumNodes = 8;
 q_LV = [.2 0;.2 0;.2 0];
 S0 = 1e7;
 V0a = 1e4;
 
 
 for index = 1:3
-    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)))
-        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)));
+    if isfile(sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)))
+        load(sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
@@ -44,7 +45,7 @@ t = tiledlayout(1,3,'Padding','loose','TileSpacing','loose');
 
 inset_position = [0.1150    0.335    0.18    0.4000; .425 .335 .18 .4; .713 .335 .18 .4];
 colorlabel_position = [2.9109 1e4 0; 2.9109 4e3 0; 2.9109 4e2 0];
-PlotTitles = {"Cycle period = 12hr","Cycle period = 16hr","Cycle period = 24hr"};
+PlotTitles = {"Cycle period = 12 hr","Cycle period = 16 hr","Cycle period = 24 hr"};
 for index = 1:3
     
     SteadyState_temp = SteadyState{index};
@@ -84,7 +85,7 @@ for index = 1:3
     
     set(ax_inset{index},'YScale','log','XScale','linear','ColorScale','log','YDir','normal'); 
     ylabel('$\gamma$: Induction rate (hr$^{-1}$)');
-    xlabel( '$p$: Integration Probability');
+    xlabel( '$p$: Integration probability');
     pbaspect(ax_inset{index},[1 1 1]);
     hold off;
 
@@ -100,12 +101,12 @@ text(1.13,1e8,'(B)','FontSize',20,'FontWeight','bold');
 text(2.42,1e8,'(C)','FontSize',20,'FontWeight','bold');
 
 %% Save Figure
-filename = dir('..\\Figures\\FigureS6*');
+filename = dir('../Figures/FigureS6*');
 
 if isempty(filename)
-    filename = '..\\Figures\\FigureS6_v1.eps';
+    filename = '../Figures/FigureS6_v1.eps';
 else
-    filename = [filename(end).folder '\' filename(end).name];
+    filename = [filename(end).folder '/' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
