@@ -8,8 +8,9 @@
 close all; 
 clear all;
 
-addpath('utils\');
-addpath('lib\');
+addpath('utils/');
+addpath('lib/');
+addpath('../Data/');
 colorpalette;
 fixedparameters;
 
@@ -23,8 +24,8 @@ V01 = 1e4;
 
 %% Load steady state density matrices (either from a datafile if it already exists or by running the utils\PopulationSteadyStateFunction if the data doesnt exist
 for index = 1:3
-    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V01,q_LV(1,1),q_LV(1,2)))
-        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V01,q_LV(1,1),q_LV(1,2)));
+    if isfile(sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V01,q_LV(1,1),q_LV(1,2)))
+        load(sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V01,q_LV(1,1),q_LV(1,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
@@ -42,8 +43,8 @@ for index = 1:3
     
     InvasionVariable = [P' Gamma(i)*ones(size(P'))];
    
-    if isfile(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,Va_0,q_LV(index,1),q_LV(index,2)))
-        load(sprintf("..\\Data\\Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,Va_0,q_LV(index,1),q_LV(index,2)));
+    if isfile(sprintf("../Data/Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,Va_0,q_LV(index,1),q_LV(index,2)))
+        load(sprintf("../Data/Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,Va_0,q_LV(index,1),q_LV(index,2)));
         Invasion{index} = InvasionDensity;
         CyclesInvasion{index} = CyclesToInvasion;
         InvasionSuccessMatrix{index} = InvasionMatrix;
@@ -99,7 +100,7 @@ for index = 1:3
     %yticklabels({'0','.5','1'});
     set(gca,'YScale','log','XScale','linear','ColorScale','log','YDir','normal','FontWeight','bold','FontSize',12); 
     ylabel('$\gamma$: Induction rate (hr$^{-1}$)','FontSize',14,"FontWeight",'bold');
-    xlabel( '$p$: Integration Probability','FontSize',14,"FontWeight",'bold');
+    xlabel( '$p$: Integration probability','FontSize',14,"FontWeight",'bold');
     c.Label.Position(1) = 4.3167;
     hold off;
 
@@ -172,12 +173,12 @@ nexttile(6);
 text(-.25,1.02,'(F)','FontSize',14,'FontWeight','bold');
    
 %% Add plot titles
-nexttile(1);
-title('Cycle period = 12hr','FontSize',18,'FontWeight','bold','Position',[4.5 1.05]);
-nexttile(3);
-title('Cycle period = 16hr','FontSize',18,'FontWeight','bold','Position',[4.5 1.05]);
-nexttile(5);
-title('Cycle period = 24hr','FontSize',18,'FontWeight','bold','Position',[4.5 1.05]);
+nexttile(2);
+title('Cycle period = 12 hr','FontSize',18,'FontWeight','bold','Position',[-.35 1.06]);
+nexttile(4);
+title('Cycle period = 16 hr','FontSize',18,'FontWeight','bold','Position',[-.35 1.06]);
+nexttile(6);
+title('Cycle period = 24 hr','FontSize',18,'FontWeight','bold','Position',[-.35 1.06]);
 
 %% Add labels for the invasion plots
 
@@ -212,12 +213,12 @@ text(1.06,.9,'Mutant invasion fails','FontSize',14,'FontWeight','bold','Rotation
 
 
 %% Save Figure
-filename = dir('..\\Figures\\Figure5*');
+filename = dir('../Figures/Figure5*');
 
 if isempty(filename)
-    filename = '..\\Figures\\Figure5_v1.eps';
+    filename = '../Figures/Figure5_v1.eps';
 else
-    filename = [filename(end).folder '\' filename(end).name];
+    filename = [filename(end).folder '/' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
