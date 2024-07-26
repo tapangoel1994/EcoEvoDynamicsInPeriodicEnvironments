@@ -9,8 +9,8 @@ clear all;
 close all;
 rng(0); %initialize random number generator
 
-addpath('utils\');
-addpath('lib\');
+addpath('utils/');
+addpath('lib/');
     colorpalette;
     fixedparameters;
 
@@ -116,11 +116,11 @@ nexttile(4);
 text(-16,10^10,'(D)','FontSize',16,'FontWeight','bold');
 
 %% Save Figure
-filename = dir('..\Figures\Figure7*');
+filename = dir('../Figures/Figure7*');
 if isempty(filename)
-    filename = '..\Figures\Figure7_v1.eps';
+    filename = '../Figures/Figure7_v1.eps';
 else
-    filename = ['..\Figures\' filename(end).name];
+    filename = ['../Figures/' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
