@@ -11,7 +11,7 @@ clear all;
 
 %addpath('..\..\SerialPassage2\');
 addpath('utils\');
-addpath('lib\')';
+addpath('lib\');
 colorpalette;
 fixedparameters;
 
