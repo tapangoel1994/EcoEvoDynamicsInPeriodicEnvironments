@@ -9,9 +9,9 @@
 close all; 
 clear all;
 
-%addpath('..\..\SerialPassage2\');
-addpath('utils\');
-addpath('lib\');
+%addpath('../../SerialPassage2/');
+addpath('utils/');
+addpath('lib/');
 colorpalette;
 fixedparameters;
 
@@ -148,7 +148,7 @@ Iter = Iter+iter;
     semilogy(1:4:Iter,TimeSeries(length(t_vals):4*length(t_vals):end,10),'LineWidth',2,'Color',linecolors.V,'LineStyle','--'); %Plot V2
 
 
-    legend('S','E$_r$','I$_r$','L$_r$','V$_r$','E$_m$','I$_m$','L$_m$','V$_m$','location','best','NumColumns',2);
+    legend('S','E$_r$','I$_r$','L$_r$','V$_r$','E$_m$','I$_m$','L$_m$','V$_m$','Position',[0.5332,0.7141,0.1824,0.09518],'NumColumns',2);
     ylim([1e-2 1e10]);
    
     
@@ -213,16 +213,16 @@ Iter = Iter+iter;
    end
    
    %% Save Figure
-filename = dir('..\Figures\FigureS4*');
+filename = dir('../Figures/FigureS4*');
 
 if isempty(filename)
-    filename = '..\Figures\FigureS4_v1.eps';
+    filename = '../Figures/FigureS4_v1.eps';
 else
     filename = filename(end).name;
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
-    filename = ['..\Figures\' extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
+    filename = ['../Figures/' extractBefore(filename,num2str(version)) num2str(version+1) '.eps'];
 end
 filename1 = [filename(1:end-4) '.png'];
 
