@@ -11,8 +11,9 @@
 close all; 
 clear all;
 
-addpath('utils\');
-addpath('lib\');
+addpath('utils/');
+addpath('lib/');
+addpath('../Data/');
 colorpalette;
 fixedparameters;
 
@@ -27,8 +28,8 @@ V0a = 1e4;
 
 
 for index = 1:2
-    if isfile(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)))
-        load(sprintf("..\\Data\\SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,p_L=%.1f,p_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)));
+    if isfile(sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)))
+        load(sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriodList(index),S0,V0a,q_LV(index,1),q_LV(index,2)));
         SteadyState{index} = SteadyStateDensity;
         CyclesSteadyState{index} = SSCycles;
     else
@@ -82,7 +83,7 @@ for index = 1:2
     
     set(ax_inset{index},'YScale','log','XScale','linear','ColorScale','log','YDir','normal'); 
     ylabel('$\gamma$: Induction rate (hr$^{-1}$)');
-    xlabel( '$p$: Integration Probability');
+    xlabel( '$p$: Integration probability');
     pbaspect(ax_inset{index},[1 1 1]);
     hold off;
 
@@ -103,12 +104,12 @@ text(-.21,5e5,'(A)','FontSize',20,'FontWeight','bold');
 text(1.15,5e5,'(B)','FontSize',20,'FontWeight','bold');
 
 %% Save Figure
-filename = dir('..\\Figures\\FigureeS7*');
+filename = dir('../Figures/FigureeS7*');
 
 if isempty(filename)
-    filename = '..\Figures\FigureS7_v1.eps';
+    filename = '../Figures/FigureS7_v1.eps';
 else
-    filename = ['..\Figures\' filename(end).name];
+    filename = ['../Figures/' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
