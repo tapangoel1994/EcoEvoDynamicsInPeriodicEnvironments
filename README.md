@@ -4,14 +4,16 @@
 
 ## General Description
 
-This repository contains all the code need to replicate the figures and analysis show in the paper *Eco-evolutionary dynamics of temperate phages in periodic environments*. The code is written in MATLAB 2022b and MATLAB 2023b. Some functions use parfor loops and therefore need the MATLAB Parallel Computing Toolbox to run. Figure 1 was created in Inkscape 1.3.2 (091e20e, 2023-11-25, custom).
+This repository contains all the code need to replicate the figures and analysis show in the paper *Eco-evolutionary dynamics of temperate phages in periodic environments*. The code is written in MATLAB 2022b and MATLAB 2023b. Some functions use parfor loops and therefore need the MATLAB Parallel Computing Toolbox to run. Figure 1 was created in Inkscape 1.3.2 (091e20e, 2023-11-25, custom). 
 
+
+## Running the code
+
+There is no existing data being used in this paper. All the results are based on solving the model setup in the methods section of manuscript. You will need MATLAB 2022b or MATLAB 2023b to run all the code (works in both versions). You will need to have the MATLAB Parallel Computing Toolbox to run the functions "PopulationSteadyStateFunction" and "InvasionDynamics" which are used to generate figures 4, 5, 6, S5, S6 and S7. I have hardcoded the use of 12 CPU nodes for parallelizing the computation involved in generating those figures. You can change that number for running the code on your machine, by changing the NumNodes variable in the script that generates the figure you want to reproduce. To generate a particular figure, set ./Code as your working directory and run the Figure\<FigureNumber>.m script to generate the corresponding figure.
+
+If you're running the code on mac/linux instead of windows, you might have to change the file separator ("/" for mac/linux and "\\" for windows). You will need to do this for all the figure generating scripts and the functions in the utils folder.
 
 ## Notes for code reviewer
-
-There is no existing data being used in this paper. All the results are based on solving the model setup in the methods section of manuscript (see ./Doc folder for the latest version manuscript). 
-
-You will need MATLAB 2022b or MATLAB 2023b to run all the code (works in both versions). You will need to have the MATLAB Parallel Computing Toolbox to generate figures 4,5 and 6. I have hardcoded the use of 12 CPU nodes for parallelizing the computation involved in generating those figures. You might want to change that number for running the code on your machine. 
 
 I suggest reviewing the code files in the following order:
    1. Read the methods section, and Tables S1 and S2 of the manuscript.
@@ -20,7 +22,7 @@ I suggest reviewing the code files in the following order:
    4. Read through the code in Code\utils\PopulationSteadyStateFunction.m
    5. Read through the code in Code\utils\InvasionDynamics.m
 
-Now, you should be able to generate all the figures in the paper (except figure 1 and the diagrams in figure 3) by simply running the corresponding Code\Figure_FigureNumber.m file. Make sure you are in the ./Code directory while running those scripts.
+Now, you should be able to generate all the figures in the paper (except figure 1 and the diagrams in figure 3) by simply running the corresponding Code\Figure\<FigureNumber>.m file. Make sure you are in the ./Code directory while running those scripts.
 
 ## Folder content description
 
