@@ -28,7 +28,8 @@ psi = params.mu_max*R/(params.R_in+R); %monod resource consumption
 
 dydt = zeros(1,10);
 
-dydt(1) = - params.conversion_efficiency*psi*(S+sum(E)+sum(I)+sum(L)) - params.d_R*R; %% dR/dt
+dydt(1) = - params.conversion_efficiency*psi*(S+sum(E)+sum(I)+sum(L)) - params.d_R*R; %% dR/dt; 
+% please note that in the script we have explicitly set params.d_R = 0 
 
 dydt(2) = psi*S - params.phi*S*sum(V) - params.d_S*S; %% dS/dt
 
