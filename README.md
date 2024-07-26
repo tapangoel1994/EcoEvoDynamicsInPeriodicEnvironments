@@ -2,6 +2,8 @@
 
 *By Tapan Goel, 2024*
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13020845.svg)](https://doi.org/10.5281/zenodo.13020845)
+
 ## General Description
 
 This repository contains all the code need to replicate the figures and analysis show in the paper *Eco-evolutionary dynamics of temperate phages in periodic environments*. The code is written in MATLAB 2022b and MATLAB 2023b. Some functions use parfor loops and therefore need the MATLAB Parallel Computing Toolbox to run. Figure 1 was created in Inkscape 1.3.2 (091e20e, 2023-11-25, custom). 
