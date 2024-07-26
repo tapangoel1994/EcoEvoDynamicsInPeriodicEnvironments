@@ -8,8 +8,8 @@
 close all; 
 clear all;
 
-addpath('utils\');
-addpath('lib\');
+addpath('utils/');
+addpath('lib/');
     colorpalette;
     fixedparameters;
 
@@ -308,12 +308,12 @@ ylabel('Total viral genome density (mL$^{-1})$','FontSize',18,'FontWeight','bold
 
 
 %% Save Figure
-filename = dir('..\Figure\Figure3*');
+filename = dir('../Figure/Figure3*');
 
 if isempty(filename)
-    filename = '..\Figures\Figure3_v1.svg';
+    filename = '../Figures/Figure3_v1.svg';
 else
-    filename = ['..\Figures\' filename(end).name];
+    filename = ['../Figures/' filename(end).name];
     version = extractBetween(filename,"_v",".");
     version = version{1};
     version = str2num(version);
