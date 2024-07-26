@@ -22,6 +22,11 @@ I suggest reviewing the code files in the following order:
 
 Now, you should be able to generate all the figures in the paper (except figure 1 and the diagrams in figure 3) by simply running the corresponding Code\Figure_FigureNumber.m file. Make sure you are in the ./Code directory while running those scripts.
 
+NB: Please note that for Mac and Linux machine while generating figures the paths will break. You might need to change the paths. You can manually add the path as 
+```matlab
+addpath(genpath('./../')
+```
+
 ## Folder content description
 
 ### ./Doc
