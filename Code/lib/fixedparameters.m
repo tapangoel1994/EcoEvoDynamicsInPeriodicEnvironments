@@ -40,7 +40,7 @@ Va_0 = 1e4; %virions/mL
 Vb_0 = 10*criticaldensitythreshold; %viral genome copies/mL
 
 %% Transfer parameters
-q_R = 1; % fraction of resources transferred from one cycle to next
+q_R = 0; % fraction of resources transferred from one cycle to next
 q_S = 0; % fraction of susceptible cells transferred from one cycle to next
 q_E = 0; % fraction of exposed cells transferred from one cycle to next
 q_I = 0; % fraction of lytically infected cells transferred from one cycle to next
