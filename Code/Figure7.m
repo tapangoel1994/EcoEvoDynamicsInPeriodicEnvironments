@@ -22,6 +22,7 @@ MaxCycles = 100;
 NumSims = 1;
 
 %% filter parameters
+p_R = 0;
 p_S = 0;
 p_E = 0;
 p_I = 0;
@@ -64,7 +65,7 @@ for index = 1:3
 
         [t_vals,y] = ode113(@ODE_RSEILV_2Species,params.t_vals,y0,options,params);
         timeseries = [timeseries;y(end,:)];
-        TransferMatrix = diag([0 p_S p_E p_E p_I p_I p_L(iter,1) p_L(iter,1) p_V(iter,1) p_V(iter,1)]);
+        TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L(iter,1) p_L(iter,1) p_V(iter,1) p_V(iter,1)]);
         y0 = [R0 S0 zeros(1,8)] + y(end,:)*TransferMatrix; 
     end
 
