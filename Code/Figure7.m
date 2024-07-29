@@ -22,8 +22,8 @@ MaxCycles = 100;
 NumSims = 1;
 
 %% filter parameters
-p_L = .1*ones(MaxCycles,NumSims);%*(rand(MaxCycles,NumSims));
-p_V = 10.^(-5+4*(rand(MaxCycles,NumSims)));
+q_L = .1*ones(MaxCycles,NumSims);%*(rand(MaxCycles,NumSims));
+q_V = 10.^(-5+4*(rand(MaxCycles,NumSims)));
 
 
 %% initial conditions
@@ -41,7 +41,7 @@ t = tiledlayout(4,1,"TileSpacing",'compact','Padding','compact');
 
 %% Plot the viral fraction
 nexttile(1);
-semilogy(.99:MaxCycles-.01,p_V,'-*','Color',.25*[1 1 1],'LineWidth',2,'MarkerSize',4);
+semilogy(.99:MaxCycles-.01,q_V,'-*','Color',.25*[1 1 1],'LineWidth',2,'MarkerSize',4);
 ylim([10^-5.1 1e-1]);
 xlim([0 MaxCycles+5]);
 set(gca,'YMinorTick','off','Box','off','XTick',0:20:MaxCycles,'XTickLabel',[],'YTick',logspace(-5,-1,3));
@@ -61,7 +61,7 @@ for index = 1:3
 
         [t_vals,y] = ode113(@ODE_RSEILV_2Species,params.t_vals,y0,options,params);
         timeseries = [timeseries;y(end,:)];
-        TransferMatrix = diag([p_R p_S p_E p_E p_I p_I p_L(iter,1) p_L(iter,1) p_V(iter,1) p_V(iter,1)]);
+        TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L(iter,1) q_L(iter,1) q_V(iter,1) q_V(iter,1)]);
         y0 = [R0 S0 zeros(1,8)] + y(end,:)*TransferMatrix; 
     end
 
