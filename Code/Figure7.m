@@ -22,10 +22,6 @@ MaxCycles = 100;
 NumSims = 1;
 
 %% filter parameters
-p_R = 0;
-p_S = 0;
-p_E = 0;
-p_I = 0;
 p_L = .1*ones(MaxCycles,NumSims);%*(rand(MaxCycles,NumSims));
 p_V = 10.^(-5+4*(rand(MaxCycles,NumSims)));
 

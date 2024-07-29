@@ -28,12 +28,10 @@ params.t_vals = transpose(0:params.dt:params.T); % time
 MaxCycles = 10000;
 
 %% filter parameters
-q_S = 0;
-q_E = 0;
-q_I = 0;
+
 q_L = 0.2;
 q_V = 0.0;
-TransferMatrix = diag([0 q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
+TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
