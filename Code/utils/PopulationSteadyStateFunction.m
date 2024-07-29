@@ -87,7 +87,7 @@ params.t_vals = transpose(0:params.dt:params.T); % time vector
 
 
 %% filter parameters
-q_R = 1;
+q_R = 0;
 q_S = 0;
 q_E = 0;
 q_I = 0;
