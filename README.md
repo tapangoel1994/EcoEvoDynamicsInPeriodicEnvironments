@@ -2,7 +2,7 @@
 
 *By Tapan Goel, 2024*
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13020845.svg)](https://doi.org/10.5281/zenodo.13020845)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13126625.svg)](https://doi.org/10.5281/zenodo.13126625)
 
 ## General Description
 
