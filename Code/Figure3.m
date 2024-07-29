@@ -20,7 +20,7 @@ params.T = 24; % hours
 params.t_vals = transpose(0:params.dt:params.T); % time
 NCycles = 20;
 %% filter parameters
-q_R = 1;
+q_R = 0;
 q_S = 0;
 q_E = 0;
 q_I = 0;
