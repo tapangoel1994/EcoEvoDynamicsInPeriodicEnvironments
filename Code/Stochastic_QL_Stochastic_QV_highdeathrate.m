@@ -1,4 +1,4 @@
-%% Script runs each strategy through 100 realizations of 100 cycles each with different levels of fixed qL and different lowerbound levels of stochastic qV to generate heatmaps.
+%% Script runs each strategy through 100 realizations of 100 cycles each with different lowerbound levels of stochastic qL and different lowerbound levels of stochastic qV to generate heatmaps.
 
 
 %% Author: Tapan Goel
