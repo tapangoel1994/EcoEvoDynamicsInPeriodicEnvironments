@@ -7,7 +7,8 @@
 % We repeat this procedure for every resident-mutant pair in the invasion
 % variable vector.
 
-%%Date Created: 07/16/2024
+%%Date Created: 12/06/2024
+%%Date updated: 1/09/2025
 %%Author: Tapan Goel
 
 %% Inputs:
@@ -18,16 +19,16 @@
 %                    defines a species.
 % numNodes - number of nodes being used for parallel computing. Do not
 %            exceed 32 (depending on cluster being used).
-% SaveFlag - set to 1 if you want to save the output workspace to a
-%           .matfile
+% Save -     If Save.Flag == 1, save the output workspace to a matfile
+%           named Save.FileName.
 % params as the varargin input - simulation parameters including life history traits and
 % simulation parameters. if params is empty, the function assigns default
 % values to the parameters internally.
 
 %% Output:
 % InvasionDensity - 3D array of size
-%                   length(InvasionVariable)xlength(InvasionVariable)x10.
-%                   Y = InvasionDensity(i,j:) contains the density vector of the one host two virus system for resident with traits InvasionVariable(i,:) 
+%                   length(InvasionVariable)xlength(InvasionVariable)x10./
+%                   Y = InvasionDensity(i,j,:) contains the density vector of the one host two virus system for resident with traits InvasionVariable(i,:) 
 %                   and mutant with traits InvasionVariable(j,:), at the beginning of the cycle where invasion success/failure is determined.
 %                   The vector itself is Y =
 %                   [R,S,E_a,E_b,I_a,I_b,L_a,L_b,V_a,V_b].
@@ -49,56 +50,28 @@
 %                  InvasionVariable(j,:), in a system with
 %                  resident with traits InvasionVariable(i,:), to determine
 %                  whether the invasion was a success or a failure.
-%
-% This function also generates a .mat file named:
-% "../Data/Invasion_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,q_L=<q_L>,q_V=<q_V>.mat"
-% that contains all the variables in the workspace from the simulation.
 
 
 %% Note: This function uses the parfor loop and therefore needs the MATLAB Parallel Computing Toolbox to run
 
-function [InvasionDensity, InvasionMatrix, CyclesToInvasion] = InvasionDynamics(CyclePeriod,q_L,q_V,InvasionVariable,numNodes,SaveFlag, varargin)
+function [InvasionDensity, InvasionMatrix, CyclesToInvasion] = InvasionDynamics(CyclePeriod_Input,q_L,q_V,InvasionVariable,MaxCycles_Input,numNodes,Save, varargin)
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
-if nargin == 6
-
-    %% Life history parameters (units of hours, micrograms and mL). 
-    params.J = 0; %ug/mL-h
-    params.conversion_efficiency = 5e-7; %ug/cell
-    params.d_R = 0; % per hour
-    params.mu_max = 1.2; % per hour
-    params.R_in = 4; %ug/mL
-    params.alpha_l = 0;
-    params.alpha_e = 0;
-    params.alpha_i = 0;
-    
-    params.d_S = .2; %per hour
-    params.d_E = .2; %per hour
-    params.d_L = .2; %per hour
-    params.d_I = .2; %per hour
-    params.m = 1/24; %per hour
-    
-    params.phi = 3.4e-10; %mL/hr
-    params.lambda = 2; %per hour
-    params.eta = 1; %per hour
-    params.bet = 50;
+if isempty(varargin)
+     %% Life history parameters (units of hours, micrograms and mL). 
+    addpath('..\lib\')
+    fixedparameters;
     params.p = [0 0];
     params.gamma = [0 0];
     
-    %% simulation parameters:
-    criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical in per mL
-    params.flask_volume = 1/criticaldensitythreshold; %volume in mL
-    params.dt = 1/30; % hours
-    
-
 else 
     params = varargin{1}; %% if life history and simulation parameters were added as function input, assign them to the params variable.
 end
 
 
-MaxCycles = 50000;
+
 InvasionCycles = 10;
-params.T = CyclePeriod; % hours
+params.T = CyclePeriod_Input; % hours
 params.t_vals = transpose(0:params.dt:params.T); % time
 
 %% filter parameters
@@ -150,7 +123,7 @@ parfor resident = 1:length(InvasionVariable)
         %initial population for the previous epoch for atleast 10 cycles OR,
         %2. The total number of cycles hits the max number of cycles.
         
-        while ( (sum(abs(x0 - y(1,:)) > criticaldensitythreshold) >= 1) || steadyrep < 10) && iter < MaxCycles+10
+        while ( (sum(abs(x0 - y(1,:)) > criticaldensitythreshold) >= 1) || steadyrep < 10) && iter < MaxCycles_Input+10
             if((sum(abs(x0 - y(1,:)) > criticaldensitythreshold) < 1))
                         steadyrep = steadyrep+1;
             end
@@ -182,7 +155,7 @@ parfor resident = 1:length(InvasionVariable)
                 InvasionSeries(1,:) = x0;
                 InvasionIterations = 0;
 
-                while ~InvasionTerminationFlag %keep iterating till there is a clear success/failure determination about the invasion
+                while ~InvasionTerminationFlag & InvasionIterations < MaxCycles_Input %keep iterating till there is a clear success/failure determination about the invasion
                     
                     for ii = 1:InvasionCycles %run InvasionCycles = 10 growth cycles with the resident and the mutant in the system
                         [t_vals, y] = ode113(@ODE_RSEILV_2Species, Params.t_vals, x0, options, Params);
@@ -191,13 +164,24 @@ parfor resident = 1:length(InvasionVariable)
                         InvasionIterations = InvasionIterations+1;
                     end
                     
-                    if (sum(InvasionSeries(end,4:2:end),2) > Vb_0) & sum(InvasionSeries(end,4:2:end),2) > sum(InvasionSeries(end-1,4:2:end),2) %Invasion successful
-                       InvasionTerminationFlag = 1;
-                       InvasionMatrixforResident(mutant) = 1;
-                    elseif (sum(InvasionSeries(end,4:2:end),2) < Vb_0) & sum(InvasionSeries(end,4:2:end),2) < sum(InvasionSeries(end-1,4:2:end),2) %Invasion failure     
+                    if sum(InvasionSeries(end,4:2:end),2) < criticaldensitythreshold % invasion is always a failure if mutant falls below critical threshold
                         InvasionTerminationFlag = 1;
                         InvasionMatrixforResident(mutant) = -1;
+                    else %if mutant is above the critical threshold, there can be invasion success or invasion failure.
+                        if (sum(InvasionSeries(end,4:2:end),2) > Vb_0) & sum(InvasionSeries(end,4:2:end),2) > sum(InvasionSeries(end-1,4:2:end),2) %Invasion successful because final mutant value is above threshold and increasing
+                           InvasionTerminationFlag = 1;
+                           InvasionMatrixforResident(mutant) = 1;
+                        
+                        elseif  (sum(InvasionSeries(end,3:2:end),2) < criticaldensitythreshold) & (sum(InvasionSeries(end,4:2:end),2) > Vb_0) & (sum(abs(diff(sum(InvasionSeries(:,4:2:end),2))) > criticaldensitythreshold)<2) %Invasion successful if mutant is above threshold and stable/increasing/minor fluctuations whereas resident is below threshold
+                            InvasionTerminationFlag = 1;
+                            InvasionMatrixforResident(mutant) = 1;
+                            
+                        elseif (sum(InvasionSeries(end,4:2:end),2) < Vb_0) & sum(InvasionSeries(end,4:2:end),2) < sum(InvasionSeries(end-1,4:2:end),2) %Invasion failure because final mutant value is below threshold and decreasing    
+                            InvasionTerminationFlag = 1;
+                            InvasionMatrixforResident(mutant) = -1;
+                        end
                     end
+
                 end
                 InvasionforResidentDensity(mutant,:) = InvasionSeries(end,:);  
                 CyclesToInvasionforResident(mutant) = InvasionIterations;
@@ -230,14 +214,14 @@ parfor resident = 1:length(InvasionVariable)
         if InvasionMatrix(end,end-1) == -2
             InvasionMatrix(end,end) = -2;
         end
-%% Save workspace
-if SaveFlag == 1
-    if ~isfolder('../Data/')
-        mkdir('../Data/');
+
+    %% Save workspace
+    if Save.Flag == 1
+        if ~isempty(Save.FileName)
+            save(Save.FileName);
+        else
+            error('No filename provided');
+        end
     end
-    filename = sprintf("../Data/Invasion_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_L,q_V);
-    save(filename);
-end
 
 end
-
