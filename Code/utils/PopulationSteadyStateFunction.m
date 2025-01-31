@@ -3,7 +3,8 @@
 % Obtain appropriate steady state densities for
 % every (p,gamma) pair, store the steady state values and generate a heatmap. 
 
-%%Date Created: 1/23/2024
+%%Date Created: 12/5/2024
+%%Date updated: 1/9/2025
 %%Author: Tapan Goel
 
 %% Inputs:
@@ -14,8 +15,8 @@
 % P - array of P values at which steady states are to be evaluated. 
 % numNodes - number of nodes being used for parallel computing. Do not
 % exceed 32 (depending on cluster being used).
-% SaveFlag - set to 1 if you want to save the output workspace to a
-%           .mat file
+% Save - If Save.Flag == 1, save the output workspace to a matfile
+% named Save.FileName.
 % params as the varargin input - simulation parameters including life history traits and
 % simulation parameters. if params is empty, the function assigns default
 % values to the parameters internally.
@@ -23,67 +24,38 @@
 %% Output:
 % SteadyStateDensity - 3D array of size length(P)xlenth(Gamma)x10. 
 %                      Y = SteadyStateDensity(i,j,:) contains the steady
-%                       state viral density vector for P(i),Gamma(j).
+%                       state initial viral density vector for P(i),Gamma(j).
 %                       The vector itself is Y =
 %                       [R,S,E_a,0,I_a,0,L_a,0,V_a,0]
 % SSCycles - 2D matrix of size length(P)xlength(Gamma). SSCycles(i,j) is
 % the number of cycles it takes for the system to reach steady state for
 % P(i), Gamma(j).
 
-% This function also generates a .mat file named:
-% "../Data/SteadyState_CyclePeriod=<CyclePeriod>,S0=<InitialHostDensity>,V0=<InitialViralDensity>,q_L=<q_L>,q_V=<q_V>.mat"
-% that contains all the variables in the workspace from the simulation.
-% Note that the output file has variables for the steady state values of
+
+% Note that the output matfile (if saved) has variables for the steady state values of
 % each cell type for all strategies evaluated but does not have the
 % dynamics for the strategies.
 
 %% Note: This function uses the parfor loop and therefore needs the MATLAB Parallel Computing Toolbox to run
 
-function [SteadyStateDensity, SSCycles] = PopulationSteadyStateFunction(CyclePeriod,q_L,q_V,Gamma,P,numNodes,SaveFlag,varargin)
+function [SteadyStateDensity, SSCycles] = PopulationSteadyStateFunction(CyclePeriod_Input,q_L,q_V,MaxCycles_Input,Gamma,P,numNodes,Save,varargin)
 
 %% If life history and simulation parameters are not added as a function input, create parameter values
-if nargin == 7
+if isempty(varargin)
     %% Life history parameters (units of hours, micrograms and mL). 
-    params.J = 0; %ug/mL-h
-    params.conversion_efficiency = 5e-7; %ug/cell
-    params.d_R = 0; % per hour
-    params.mu_max = 1.2; % per hour
-    params.R_in = 4; %ug/mL
-    params.alpha_l = 0;
-    params.alpha_e = 0;
-    params.alpha_i = 0;
-    
-    params.d_S = .2; %per hour
-    params.d_E = .2; %per hour
-    params.d_L = .2; %per hour
-    params.d_I = .2; %per hour
-    params.m = 1/24; %per hour
-    
-    params.phi = 3.4e-10; %mL/hr
-    params.lambda = 2; %per hour
-    params.eta = 1; %per hour
-    params.bet = 50;
+    addpath('..\lib\')
+    fixedparameters;
     params.p = [0 0];
     params.gamma = [0 0];
-    
-    
-    %% Simulation parameters:
-    
-    params.dt = 1/30; % hours
-    MaxCycles = 50000; % Max number of cycles to steady state before while loop terminates
-    InvasionCycles = 10;% Number of cycles in each set to evaluate transients during invasion
-
-    criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical in per mL
-    params.flask_volume = 1/criticaldensitythreshold; %volume in mL      
-    
+   
 else 
     params = varargin{1}; %% if life history and simulation parameters were added as function input, assign them to the params variable.
 end
 
 %% Simulation parameters added as inputs to the function
-params.T = CyclePeriod; % hours
+params.T = CyclePeriod_Input; % hours
 params.t_vals = transpose(0:params.dt:params.T); % time vector
-
+MaxCycles = MaxCycles_Input;
 
 
 %% filter parameters
@@ -97,9 +69,6 @@ TransferMatrix = diag([q_R q_S q_E q_E q_I q_I q_L q_L q_V q_V]);
 
 %% Numerical method related parameters
 options = odeset('AbsTol',1e-8,'RelTol',1e-8,'NonNegative',1:10); %Options for the ODE function call
-
-MaxCycles = 50000; % Max number of cycles to steady state before while loop terminates
-InvasionCycles = 10;% Number of cycles in each set to evaluate transients during invasion
 criticaldensitythreshold = 1e-3; % concentration difference below which two concentrations are treated as identical in per mL
 params.flask_volume = 1/criticaldensitythreshold; %volume in mL      
 
@@ -170,13 +139,12 @@ for ii = 1:length(P)*length(Gamma)
 end
 
 %% Save workspace
-if SaveFlag == 1
-     if ~isfolder('../Data/')
-        mkdir('../Data/');
+if Save.Flag == 1
+    if ~isempty(Save.FileName)
+        save(Save.FileName);
+    else
+        error('No filename provided');
     end
-    filename = sprintf("../Data/SteadyState_CyclePeriod=%.1f,S0=%1.e,V0=%1.e,q_L=%.1f,q_V=%.1f.mat",CyclePeriod,S0,Va_0,q_L,q_V);
-    save(filename);
 end
 
 end
-
